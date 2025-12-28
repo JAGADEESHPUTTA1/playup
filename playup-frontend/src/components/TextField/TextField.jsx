@@ -1,18 +1,4 @@
-// import "./styles.css";
-
-// const TextField = ({ labelName, textarea=false,type="text", ...props }) => {
-//   return (
-//     <div>
-//       <p className="white mb_1">{labelName}</p>
-//       {!textarea ? <input required={type === "date"} type={type} className="text_field" {...props}/> : <textarea className="text_field" {...props}/>}
-//     </div>
-//   );
-// };
-
-// export default TextField;
-
-
-import "./styles.css";
+ import "./TextField.css";
 
 const TextField = ({
   labelName,
@@ -22,8 +8,6 @@ const TextField = ({
   options = [],
   ...props
 }) => {
-  console.log(options);
-  
   return (
     <div className="fieldWrapper">
       {labelName && <p className="white mb_1">{labelName}</p>}

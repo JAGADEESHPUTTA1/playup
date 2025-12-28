@@ -5,9 +5,9 @@ import dotenv from "dotenv";
 
 import orderRoutes from "./routes/orderRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
+import authRoutes from "./routes/authRoutes.js"
 
 dotenv.config();
-
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -19,6 +19,7 @@ mongoose
 
 app.use("/api/orders", orderRoutes);
 app.use("/api/payments", paymentRoutes);
+app.use("/api/auth", authRoutes);
 
 app.listen(process.env.PORT, () => {
   console.log(`Backend running on port ${process.env.PORT}`);

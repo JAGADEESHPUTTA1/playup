@@ -1,23 +1,25 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
-import Book from "./pages/Book";
+import Book from "./pages/Book/Book";
 import Payment from "./pages/Payment";
 import Success from "./pages/Success";
-import Home from "./Pages/Home";
+import Home from "./pages/Home/Home";
+import Navbar from "./components/Navbar/Navbar";
+import Login from "../src/components/Login/Login";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Navbar />
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Login />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/book" element={<Book />} />
         <Route path="/payment" element={<Payment />} />
         <Route path="/success" element={<Success />} />
       </Routes>
-      {/* <Footer /> */}
+      <Footer />
     </BrowserRouter>
   );
 }

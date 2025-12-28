@@ -2,12 +2,12 @@ import { motion } from "framer-motion";
 
 const CheckCircleAnimated = ({
   size = 80,
-  color = "#208943",
+  color = "#208943",className=""
 }) => {
   return (
     <motion.svg
       width={size}
-      height={size}
+      height={size} className={className}
       viewBox="0 0 48 48"
       xmlns="http://www.w3.org/2000/svg"
       fill="none"

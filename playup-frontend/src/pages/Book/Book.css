@@ -1,0 +1,82 @@
+/* =========================
+   PAGE WRAPPER (MATCH HOME)
+========================= */
+.book_bg {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 80px 20px;
+}
+
+/* =========================
+   CONTENT CONTAINER
+========================= */
+.book_container {
+  width: 100%;
+  max-width: 560px; /* same visual width as Home */
+}
+
+/* =========================
+   PAGE TITLE
+========================= */
+.book_container h2 {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+
+/* =========================
+   FIELD WRAPPER SPACING
+   (KEY FIX)
+========================= */
+.book_container .fieldWrapper {
+  margin-bottom: 16px;
+}
+
+/* Make inputs stretch full width in booking */
+.book_container .text_field {
+  width: 100%;
+}
+
+/* =========================
+   LOCATION SECTION
+========================= */
+.book_container .btn-secondary {
+  margin-top: 8px;
+}
+
+.book_container p {
+  font-size: 14px;
+}
+
+/* =========================
+   PRIMARY CTA
+========================= */
+.book_container .center {
+  margin-top: 24px;
+}
+
+.book_container .center button,
+.book_container .center .pay-btn {
+  width: 100%;
+}
+.white {
+  color: #ffffff;
+}
+.mb-3 {
+  margin-bottom: -4px;
+}
+/* =========================
+   MOBILE (MATCH HOME)
+========================= */
+@media (max-width: 768px) {
+  .book_bg {
+    padding: 60px 16px;
+  }
+
+  .book_container h2 {
+    font-size: 24px;
+    text-align: center;
+  }
+}
