@@ -6,7 +6,7 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: 80px 20px;
+  padding: 20px 20px;
 }
 
 /* =========================
@@ -72,7 +72,7 @@
 ========================= */
 @media (max-width: 768px) {
   .book_bg {
-    padding: 60px 16px;
+    padding: 30px 16px;
   }
 
   .book_container h2 {

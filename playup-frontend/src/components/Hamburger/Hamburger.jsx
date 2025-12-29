@@ -1,0 +1,70 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "./Hambergur.css";
+import { useAuth } from "../../Context/AuthContext";
+
+export default function HamburgerMenu() {
+  const {user , logout} = useAuth()
+  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
+
+  if (!token) return null; 
+  
+  const logoutHandler = () => {
+    logout()
+    setOpen(false)
+    navigate("/");
+  };
+
+  const myOrderHandler = () => {
+    if(!token) {
+      navigate("/")
+    }
+    setOpen(false)
+    navigate("/my-orders")
+  }
+
+  const adminOrderHandler = () => {
+    if(!token) {
+      navigate("/")
+    }
+    setOpen(false)
+    navigate("/admin/order")
+  }
+
+  return (
+    <>
+      {/* Hamburger Icon */}
+      <div className="hamburger" onClick={() => setOpen(!open)}>
+        <span />
+        <span />
+        <span />
+      </div>
+
+      {/* Overlay */}
+      {open && <div className="menu-overlay" onClick={() => setOpen(false)} />}
+
+      {/* Drawer */}
+      <div className={`menu-drawer ${open ? "open" : ""}`}>
+        <h3 className="menu-title">Menu</h3>
+
+        {user.role === "user" && (
+          <button onClick={myOrderHandler}>My Orders</button>
+        )}
+
+        {user.role === "admin" && (
+          <button onClick={adminOrderHandler}>
+            Admin Dashboard
+          </button>
+        )}
+
+        <button className="logout-btn" onClick={logoutHandler}>
+          Logout
+        </button>
+      </div>
+    </>
+  );
+}

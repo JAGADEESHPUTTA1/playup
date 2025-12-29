@@ -11,7 +11,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const navigate = useNavigate();
-  const {login} = useAuth()
+  const { login, user } = useAuth();
 
   const [form, setForm] = useState({
     name: "",
@@ -63,16 +63,21 @@ export default function Login() {
         otp: form.otp,
         mode,
       });
-      login(res.data)
+      if (res.data.user.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/home");
+      }
+      login(res.data);
     } catch (error) {
       setErrorMsg(error?.response?.data?.message || "Invalid or expired OTP");
     } finally {
       setLoading(false);
-      navigate("/home");
+      
     }
   };
 
-  if (loading) return <Loader text="verifying your details..."/>;
+  if (loading) return <Loader text="verifying your details..." />;
 
   return (
     <div className="auth-container">

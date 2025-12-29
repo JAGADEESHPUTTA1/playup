@@ -1,0 +1,67 @@
+.my-orders {
+  padding: 16px;
+}
+
+.my-orders h2 {
+  margin-bottom: 16px;
+}
+
+.orders-list {
+    flex-wrap: wrap;
+    width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+}
+
+.order-card {
+  background: #111827;
+  color: #fff;
+  padding: 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 1px solid #1f2937;
+  width: 290px;
+}
+
+.order-card:hover {
+  border-color: #93c5fd;
+}
+
+.order-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.label {
+  color: #9ca3af;
+}
+
+.status {
+  text-transform: capitalize;
+  font-weight: 600;
+}
+
+.status.pending { color: #facc15; }
+.status.confirmed { color: #38bdf8; }
+.status.active { color: #22c55e; }
+.status.completed { color: #a3e635; }
+.status.cancelled { color: #ef4444; }
+
+.my-orders.empty {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.my-orders.empty button {
+  margin-top: 12px;
+  padding: 10px 16px;
+  background: #22c55e;
+  border: none;
+  border-radius: 6px;
+  color: #000;
+  font-weight: 600;
+  cursor: pointer;
+}

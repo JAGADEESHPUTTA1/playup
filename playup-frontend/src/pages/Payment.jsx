@@ -1,6 +1,8 @@
+import { useNavigate } from "react-router-dom";
 import { api } from "../services/api";
 
 export default function Payment() {
+  const navigate = useNavigate()
   const payNow = async () => {
     const orderId = localStorage.getItem("orderId");
     const amount = localStorage.getItem("amount");
@@ -24,7 +26,7 @@ export default function Payment() {
           ...response,
           orderId
         });
-        window.location.href = "/success";
+        navigate("/success");
       }
     };
 

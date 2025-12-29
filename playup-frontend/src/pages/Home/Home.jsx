@@ -11,7 +11,7 @@ const Home = () => {
 
   const whatsappHandler = () => {
     const phoneNumber = "918328005037";
-   const message = `
+    const message = `
 Hello PlayUp 👋
 
 I’m interested in renting a PlayStation console.Could you please share the available options, pricing, and rental process?
@@ -19,18 +19,17 @@ I’m interested in renting a PlayStation console.Could you please share the ava
 Thank you.
 `.trim();
 
-  const encodedMessage = encodeURIComponent(message);
+    const encodedMessage = encodeURIComponent(message);
 
-  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
 
-   window.location.href = whatsappUrl
+    window.location.href = whatsappUrl;
   };
 
   return (
     <div className="page">
       <main className="hero">
         <div className="hero-content">
-
           <h1>
             Play More.
             <br />

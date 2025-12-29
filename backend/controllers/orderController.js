@@ -16,6 +16,7 @@ export const createOrder = async (req, res) => {
       rentAmount,
       depositAmount,
       deliveryAddress,
+      gamesList,
     } = req.body;
 
     if (
@@ -24,7 +25,8 @@ export const createOrder = async (req, res) => {
       !rentalStartDate ||
       !rentalEndDate ||
       !rentAmount ||
-      !deliveryAddress
+      !deliveryAddress ||
+      !gamesList
     ) {
       return res.status(400).json({
         success: false,
@@ -68,7 +70,7 @@ export const createOrder = async (req, res) => {
       rentalStartDate,
       rentalEndDate,
       hours,
-
+      gamesList,
       rentAmount,
       depositAmount,
 

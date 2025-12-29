@@ -54,7 +54,6 @@ export default function Book() {
   };
 
   const submitBooking = async () => {
-    console.log(form, )
     try {
       setLoader(true);
       const price = calculateBookingPrice({
@@ -93,9 +92,9 @@ export default function Book() {
         rentAmount: price,
         depositAmount: 0,
         deliveryAddress: form.location,
+        gamesList:form.gamesList
       });
 
-      console.log(res.data, "ORDERSDATA")
       localStorage.setItem("orderId", res.data.data._id);
       localStorage.setItem("amount", res.data.data.rentAmount);
 
@@ -108,7 +107,7 @@ export default function Book() {
   };
 
   return (
-    <div className="book_bg" style={{ padding: 40 }}>
+    <div className="book_bg">
       {loader && <Loader text="Confirming your booking..." />}
       <div className="book_container">
         <h2 className="white">Book Your Console</h2>
@@ -152,7 +151,7 @@ export default function Book() {
           onChange={(e) => formHandler("noOfControllers", e.target.value)}
         />
         <TextField
-          labelName="Games you want(2 games free)"
+          labelName="Games You Want (2 Free Included)"
           textarea
           onChange={(e) => formHandler("gamesList", e.target.value)}
         />

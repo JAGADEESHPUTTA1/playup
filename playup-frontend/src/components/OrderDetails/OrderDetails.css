@@ -1,0 +1,60 @@
+.order-details {
+  padding: 16px;
+  width: 560px;
+  color: #fff;
+}
+
+.order-details h2 {
+  margin-bottom: 16px;
+}
+
+.details-card {
+  background: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.label {
+  color: #9ca3af;
+}
+
+.detail-block {
+  margin-top: 12px;
+}
+
+.address {
+  margin-top: 6px;
+  font-size: 14px;
+  color: #e5e7eb;
+  line-height: 1.4;
+}
+
+.status {
+  text-transform: capitalize;
+  font-weight: 600;
+}
+
+.status.pending { color: #facc15; }
+.status.confirmed { color: #38bdf8; }
+.status.active { color: #22c55e; }
+.status.completed { color: #a3e635; }
+.status.cancelled { color: #ef4444; }
+
+.back-btn {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  background: #22c55e;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}

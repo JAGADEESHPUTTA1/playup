@@ -46,6 +46,11 @@ const orderSchema = new mongoose.Schema(
       required: true,
     },
 
+    gamesList: {
+      type: String,
+      required: true,
+    },
+
     rentalEndDate: {
       type: Date,
       required: true,
