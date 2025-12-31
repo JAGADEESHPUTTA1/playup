@@ -4,35 +4,35 @@ import "./Hambergur.css";
 import { useAuth } from "../../Context/AuthContext";
 
 export default function HamburgerMenu() {
-  const {user , logout} = useAuth()
+  const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
-  const token = localStorage.getItem("token");
+  // const token = localStorage.getItem("token");
 
-  if (!user) return null; 
-  
+  if (!user) return null;
+
   const logoutHandler = () => {
-    logout()
-    setOpen(false)
+    logout();
+    setOpen(false);
     navigate("/");
   };
 
   const myOrderHandler = () => {
-    if(!user) {
-      navigate("/")
+    if (!user) {
+      navigate("/");
     }
-    setOpen(false)
-    navigate("/my-orders")
-  }
+    setOpen(false);
+    navigate("/my-orders");
+  };
 
   const adminOrderHandler = () => {
-    if(!user) {
-      navigate("/")
+    if (!user) {
+      navigate("/");
     }
-    setOpen(false)
-    navigate("/admin/orders")
-  }
+    setOpen(false);
+    navigate("/admin/orders");
+  };
 
   return (
     <>
@@ -55,9 +55,7 @@ export default function HamburgerMenu() {
         )}
 
         {user.role === "admin" && (
-          <button onClick={adminOrderHandler}>
-            All Orders
-          </button>
+          <button onClick={adminOrderHandler}>All Orders</button>
         )}
 
         <button className="logout-btn" onClick={logoutHandler}>

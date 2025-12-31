@@ -54,7 +54,7 @@ export default function Payments() {
       });
 
       const options = {
-        key: "rzp_test_RvcG219crQd0Y5",
+        key: import.meta.env.VITE_RAZORPAY_KEY,
         amount: paymentOrder.data.amount,
         currency: "INR",
         name: "PlayUp",

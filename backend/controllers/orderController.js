@@ -29,9 +29,21 @@ export const createOrder = async (req, res) => {
       });
     }
 
-    const user = await User.findById(req.user.userId);
+    const user = req.user;
+    console.log(user, req.user, "REQQ");
+    
     if (!user) {
       return res.status(401).json({ success: false, message: "Invalid user" });
+    }
+    const existingPendingOrder = await Order.findOne({
+      user: user.id,status:"pending"
+    });
+    if (existingPendingOrder) {
+      return res.status(409).json({
+        success: false,
+        message:
+          "You already have an active order. Please complete or cancel it before creating a new one.",
+      });
     }
     const normalizedConsoleType = consoleType?.toLowerCase();
     const controllersCount = Number(noOfControllers) || 1;
@@ -44,12 +56,12 @@ export const createOrder = async (req, res) => {
       hours,
       noOfControllers: controllersCount,
     });
-
+    console.log("before", user);
+    
     const order = await Order.create({
-      user: user._id,
+      user: user.id,
       customerName: user.name,
       customerPhone: user.phone,
-
       consoleType,
       noOfControllers,
       rentalStartDate,
@@ -82,7 +94,7 @@ export const createOrder = async (req, res) => {
 export const getMyOrders = async (req, res) => {
   try {
     const orders = await Order.find({
-      user: req.user.userId,
+      user: req.user.id,
     }).sort({ createdAt: -1 });
 
     res.status(200).json({
@@ -137,7 +149,6 @@ export const getOrderById = async (req, res) => {
       "user",
       "name email phone role"
     );
-
     if (!order) {
       return res.status(404).json({
         success: false,
@@ -148,7 +159,7 @@ export const getOrderById = async (req, res) => {
     // 🔒 USER CAN SEE ONLY THEIR ORDER
     if (
       req.user.role !== "admin" &&
-      order.user._id.toString() !== req.user.userId
+      order.user._id.toString() !== req.user.id.toString()
     ) {
       return res.status(403).json({
         success: false,
@@ -245,7 +256,7 @@ export const updateOrderDetails = async (req, res) => {
     // 🔒 Permission check
     if (req.user.role !== "admin") {
       if (
-        order.user.toString() !== req.user.userId ||
+        order.user.toString() !== req.user.id.toString() ||
         order.paymentStatus !== "pending"
       ) {
         return res.status(403).json({
@@ -301,7 +312,6 @@ export const updateOrderDetails = async (req, res) => {
       data: order,
     });
   } catch (error) {
-    console.error("UPDATE ORDER ERROR:", error.message);
 
     res.status(500).json({
       success: false,

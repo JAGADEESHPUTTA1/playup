@@ -9,7 +9,6 @@ export default function Success() {
   useEffect(() => {
     // Clear payment flow data
     localStorage.removeItem("orderId");
-    localStorage.removeItem("amount");
     localStorage.removeItem("paymentDone");
   }, []);
 

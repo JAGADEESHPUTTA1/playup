@@ -16,6 +16,7 @@ import UserRoute from "./components/ProtectedRoutes/UserRoute";
 import AdminRoute from "./components/ProtectedRoutes/AdminRoute";
 import RequireOrder from "./components/ProtectedRoutes/RequireOrder";
 import RequirePayment from "./components/ProtectedRoutes/RequirePayment";
+import RootRedirect from "./components/ProtectedRoutes/RootRedirect";
 
 export default function App() {
   return (
@@ -23,7 +24,8 @@ export default function App() {
       <Navbar />
       <Routes>
         {/* PUBLIC */}
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<RootRedirect />} />
+        <Route path="/login" element={<Login />} />
 
         {/* USER PROTECTED */}
         <Route

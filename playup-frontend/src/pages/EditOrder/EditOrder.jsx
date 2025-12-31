@@ -132,7 +132,6 @@ export default function EditOrder() {
         <TextField
           labelName="End Date"
           type="date"
-          min={form.rentalStartDate}
           value={form.rentalEndDate}
           onChange={(e) => formHandler("rentalEndDate", e.target.value)}
         />

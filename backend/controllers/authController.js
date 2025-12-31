@@ -60,7 +60,6 @@ export const sendOtp = async (req, res) => {
       });
     }
 
-    // Store OTP temporarily (NO user creation here)
     await Otp.findOneAndUpdate(
       { email },
       {
@@ -79,9 +78,9 @@ export const sendOtp = async (req, res) => {
       message: "OTP sent to email",
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       message: "Failed to send OTP",
-      error: error.message,
     });
   }
 };
@@ -90,7 +89,7 @@ export const sendOtp = async (req, res) => {
  * VERIFY OTP
  * - Signup → create user
  * - Login → authenticate user
- * - Issues JWT on success
+ * - Sets JWT in HttpOnly cookie
  */
 export const verifyOtp = async (req, res) => {
   try {
@@ -114,9 +113,16 @@ export const verifyOtp = async (req, res) => {
 
       const token = generateToken(user);
 
+      // 🔐 SET SECURE COOKIE
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+
       return res.json({
         message: "Login successful",
-        token,
         user: {
           id: user._id,
           name: user.name,
@@ -154,9 +160,16 @@ export const verifyOtp = async (req, res) => {
 
     const token = generateToken(user);
 
+    // 🔐 SET SECURE COOKIE
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
     res.json({
       message: "Signup successful",
-      token,
       user: {
         id: user._id,
         name: user.name,
@@ -166,9 +179,23 @@ export const verifyOtp = async (req, res) => {
       },
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       message: "OTP verification failed",
-      error: error.message,
     });
   }
 };
+
+export const logout = (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+  });
+
+  return res.json({
+    success: true,
+    message: "Logged out successfully",
+  });
+};
+

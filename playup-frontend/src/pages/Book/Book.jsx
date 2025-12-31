@@ -77,7 +77,6 @@ export default function Book() {
       });
 
       localStorage.setItem("orderId", res.data.data._id);
-      localStorage.setItem("amount", res.data.data.rentAmount);
 
       showToast(
         "Booking created successfully. Proceeding to payment.",

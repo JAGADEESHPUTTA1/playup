@@ -4,6 +4,7 @@ import { api } from "../../services/api";
 import Loader from "../../components/Loader/Loader";
 import "./AdminDashboard.css";
 import { useToast } from "../../components/Toast/ToastContext";
+import { useAuth } from "../../Context/AuthContext";
 
 export default function Dashboard() {
   const [stats, setStats] = useState(null);
@@ -11,6 +12,12 @@ export default function Dashboard() {
 
   const navigate = useNavigate();
   const { showToast } = useToast();
+
+  const { user, isAuthenticated, isAdmin } = useAuth();
+
+  console.log("USER:", user);
+  console.log("AUTH:", isAuthenticated);
+  console.log("ADMIN:", isAdmin);
 
   useEffect(() => {
     const fetchStats = async () => {

@@ -1,35 +1,45 @@
 import jwt from "jsonwebtoken";
+import User from "../models/User.js";
 
-export const protect = (req, res, next) => {
+export const protect = async (req, res, next) => {
   try {
-    const authHeader = req.headers.authorization;
+    // 🔐 Read token from HttpOnly cookie
+    const token = req.cookies.token;
 
-    // 1️⃣ Check header
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    if (!token) {
       return res.status(401).json({
         success: false,
-        message: "Not authorized, token missing",
+        message: "Not authenticated",
       });
     }
 
-    // 2️⃣ Extract token
-    const token = authHeader.split(" ")[1];
-
-    // 3️⃣ Verify token
+    // 🔐 Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET_TOKEN);
 
-    // 4️⃣ Attach user to request
+    // 🔐 Fetch user (always trust DB, not token payload)
+    const user = await User.findById(decoded.id).select("-otp -otpExpiresAt");
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // 🔐 Attach user
     req.user = {
-      userId: decoded.userId || decoded.id, // support old/new tokens
-      role: decoded.role,
-      phone: decoded.phone,
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      role: user.role,
     };
 
-    next(); // ✅ allow request
+    next(); // ✅ access granted
   } catch (error) {
     return res.status(401).json({
       success: false,
-      message: "Not authorized, invalid token",
+      message: "Invalid or expired token",
     });
   }
 };

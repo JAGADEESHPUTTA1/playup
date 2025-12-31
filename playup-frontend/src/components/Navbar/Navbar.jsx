@@ -6,11 +6,11 @@ import HamburgerMenu from "../Hamburger/Hamburger";
 import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
-  const { user, logout } = useAuth();
+  const { user, logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
+  // const token = localStorage.getItem("token");
   const logoHandler = () => {
-    if (!token) {
+    if (!isAuthenticated) {
       navigate("/");
     } else if (user.role === "user") {
       navigate("/home");
@@ -31,7 +31,7 @@ export default function Navbar() {
           />
         </div>
 
-        <HamburgerMenu />
+       {isAuthenticated && <HamburgerMenu />}
       </header>
     </nav>
   );

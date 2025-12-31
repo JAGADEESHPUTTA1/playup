@@ -129,7 +129,7 @@ export default function AdminOrders() {
             <span>Customer</span>
             <span>Console</span>
             <span>Payment</span>
-            <span>Status</span>
+            <span>Date</span>
             <span>Action</span>
           </div>
 
@@ -149,7 +149,10 @@ export default function AdminOrders() {
 
               <span>{order.paymentStatus}</span>
 
-              <span className={`status ${order.status}`}>{order.status}</span>
+              <span>
+                {new Date(order.rentalStartDate).toLocaleDateString()} →{" "}
+                {new Date(order.rentalEndDate).toLocaleDateString()}
+              </span>
 
               <span onClick={(e) => e.stopPropagation()} className="actions">
                 <TextField

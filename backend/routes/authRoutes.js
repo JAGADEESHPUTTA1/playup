@@ -1,9 +1,25 @@
 import express from "express";
-import { sendOtp, verifyOtp } from "../controllers/authController.js";
+import { logout, sendOtp, verifyOtp } from "../controllers/authController.js";
+import { protect } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
 router.post("/send-otp", sendOtp);
 router.post("/verify-otp", verifyOtp);
+router.post("/logout", logout);
+
+// 🔐 SESSION CHECK — REQUIRED
+router.get("/me", protect, (req, res) => {
+  res.json({
+    success: true,
+    user: {
+      id: req.user._id,
+      name: req.user.name,
+      email: req.user.email,
+      phone: req.user.phone,
+      role: req.user.role,
+    },
+  });
+});
 
 export default router;

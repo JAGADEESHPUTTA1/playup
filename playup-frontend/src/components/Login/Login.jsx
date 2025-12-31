@@ -174,10 +174,13 @@ export default function Login() {
         mode,
       });
 
-      login(res.data);
+      await login(res.data);
       showToast("Login successful", "success");
+      console.log(res.data.user.role, "LOGGEDIN");
 
       if (res.data.user.role === "admin") {
+        console.log("in admin route");
+        
         navigate("/admin");
       } else {
         navigate("/home");

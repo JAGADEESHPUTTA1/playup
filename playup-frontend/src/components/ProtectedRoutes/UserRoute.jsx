@@ -1,10 +1,14 @@
 import { Navigate } from "react-router-dom";
-
+import {useAuth} from "../../Context/AuthContext"
 export default function UserRoute({ children }) {
-  const token = localStorage.getItem("token");
+  const { isAuthenticated, loading } = useAuth();
 
-  if (!token) {
-    return <Navigate to="/" replace />;
+  // ⏳ Wait until /auth/me finishes
+  if (loading) return null; // or a loader
+
+  // 🔒 Not logged in
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
   }
 
   return children;
