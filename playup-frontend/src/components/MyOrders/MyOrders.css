@@ -1,5 +1,5 @@
 .my-orders {
-  padding: 16px;
+  padding: 16px 80px;
 }
 
 .my-orders h2 {
@@ -21,7 +21,7 @@
   border-radius: 10px;
   cursor: pointer;
   border: 1px solid #1f2937;
-  width: 290px;
+  width: 267px;
 }
 
 .order-card:hover {

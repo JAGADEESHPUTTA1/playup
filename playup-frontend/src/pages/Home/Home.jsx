@@ -58,7 +58,6 @@ Thank you.
             >
               <WhatsappIcon /> {"  "}Whatsapp Us
             </button>
-            <button className="btn-secondary">View Plans</button>
           </div>
 
           <span className="trust">⭐ Trusted by 1,000+ gamers</span>

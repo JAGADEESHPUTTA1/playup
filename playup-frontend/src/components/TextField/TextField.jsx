@@ -1,4 +1,4 @@
- import "./TextField.css";
+import "./TextField.css";
 
 const TextField = ({
   labelName,
@@ -6,14 +6,15 @@ const TextField = ({
   textarea = false,
   select = false,
   options = [],
+  className,
   ...props
 }) => {
   return (
     <div className="fieldWrapper">
-      {labelName && <p className="white mb_1">{labelName}</p>}
+      {labelName && <p className="white mb_1 mt_16">{labelName}</p>}
 
       {select ? (
-        <select className="text_field" {...props}>
+        <select className={`text_field ${className}`} {...props}>
           {options.map((opt) => (
             <option key={opt.value} value={opt.value}>
               {opt.label}
@@ -26,7 +27,7 @@ const TextField = ({
         <input
           type={type}
           className="text_field"
-          required={type==="date"}
+          required={type === "date"}
           {...props}
         />
       )}

@@ -9,9 +9,8 @@ export default function HamburgerMenu() {
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
-  const role = localStorage.getItem("role");
 
-  if (!token) return null; 
+  if (!user) return null; 
   
   const logoutHandler = () => {
     logout()
@@ -20,7 +19,7 @@ export default function HamburgerMenu() {
   };
 
   const myOrderHandler = () => {
-    if(!token) {
+    if(!user) {
       navigate("/")
     }
     setOpen(false)
@@ -28,11 +27,11 @@ export default function HamburgerMenu() {
   }
 
   const adminOrderHandler = () => {
-    if(!token) {
+    if(!user) {
       navigate("/")
     }
     setOpen(false)
-    navigate("/admin/order")
+    navigate("/admin/orders")
   }
 
   return (
@@ -57,7 +56,7 @@ export default function HamburgerMenu() {
 
         {user.role === "admin" && (
           <button onClick={adminOrderHandler}>
-            Admin Dashboard
+            All Orders
           </button>
         )}
 

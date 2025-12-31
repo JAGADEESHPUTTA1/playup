@@ -1,0 +1,195 @@
+.admin-orders {
+  padding: 20px 80px;
+}
+
+.orders-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.orders-header select {
+  padding: 6px 10px;
+}
+
+.orders-table {
+  background: transparent;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.filter{
+  width: 200px;
+}
+.orders-head,
+.orders-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 2fr;
+  gap: 12px;
+  padding: 12px 16px;
+  align-items: center;
+}
+
+.orders-head {
+  background: transparent;
+  font-weight: 600;
+}
+
+.orders-row {
+  border-top: 1px solid #eee;
+  cursor: pointer;
+}
+
+.orders-row:hover {
+  background: rgba(59, 130, 246, 0.15);
+}
+
+.orders-row select {
+  padding: 4px;
+}
+
+.status {
+  text-transform: capitalize;
+  font-weight: 600;
+}
+
+.status.pending {
+  color: orange;
+}
+.status.active {
+  color: green;
+}
+.status.returned {
+  color: blue;
+}
+.status.cancelled {
+  color: red;
+}
+
+.deliver {
+  width: 150px;
+  height: 42px;
+  border-radius: 8px;
+  border: none;
+  background: #22c55e;
+  color: white;
+  cursor: pointer;
+}
+
+@media (max-width:786px) {
+  .actions {
+    flex-direction: column;
+  }
+  .deliver {
+    margin-top: 16px;
+  }
+  .filter {
+    width: auto;
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+}
+/* -------- STATUS DROPDOWN (ADMIN ORDERS) -------- */
+
+.width {
+  width: 150px;
+  min-height: 34px;
+  padding: 6px 8px;
+  font-size: 14px;
+  border-radius: 6px;
+  margin-top: 0px;
+}
+
+.mtRemoval {
+  margin-top: 0px !important;
+}
+
+/* ---------------- MOBILE RESPONSIVE ---------------- */
+@media (max-width: 768px) {
+  .admin-orders {
+    padding: 20px;
+  }
+  /* Hide table header */
+  .orders-head {
+    display: none;
+  }
+
+  .orders-header {
+    display: inherit;
+  }
+
+  /* Remove table look */
+  .orders-table {
+    background: transparent;
+  }
+
+  /* Each order becomes a card */
+  .orders-row {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: transparent;
+    margin-bottom: 12px;
+    border-radius: 12px;
+    padding: 14px;
+  }
+
+  @media (max-width: 768px) {
+    /* Customer name + phone should stack */
+    .orders-row span:first-child {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+    }
+
+    .orders-row span:first-child small {
+      font-size: 12px;
+      opacity: 0.7;
+    }
+  }
+
+  .map-btn {
+    margin-top: 6px;
+    width: 100%;
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+
+  /* Stack content nicely */
+  .orders-row span {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+  }
+
+  /* Phone number style */
+  .orders-row span small {
+    font-size: 12px;
+    opacity: 0.7;
+  }
+
+  /* Customer name emphasis */
+  .orders-row span:first-child {
+    font-weight: 600;
+    font-size: 15px;
+  }
+
+  /* Status alignment */
+  .orders-row .status {
+    font-size: 14px;
+    text-align: right;
+  }
+
+  /* Dropdown full width */
+  .orders-row select {
+    width: 100%;
+    padding: 6px;
+    border-radius: 6px;
+    margin-top: 6px;
+  }
+}

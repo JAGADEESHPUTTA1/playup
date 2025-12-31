@@ -70,8 +70,16 @@
   border: none;
   outline: none;
 }
-
-.auth-card button {
+.btn-resend {
+  background: transparent;
+  color: #93c5fd;
+  border: 1px solid #93c5fd;
+  height: 38px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.auth-card .verify {
   padding: 10px;
   border: none;
   border-radius: 6px;

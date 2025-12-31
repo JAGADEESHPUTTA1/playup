@@ -1,82 +1,75 @@
-/* =========================
-   PAGE WRAPPER (MATCH HOME)
-========================= */
 .book_bg {
-  min-height: 100vh;
+  min-height: calc(100vh - 120px);
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: 20px 20px;
+  padding: 20px;
 }
 
-/* =========================
-   CONTENT CONTAINER
-========================= */
+/* Glass Card */
 .book_container {
   width: 100%;
-  max-width: 560px; /* same visual width as Home */
+  max-width: 560px;
+  background: rgba(17, 24, 39, 0.65);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 20px;
+  color: #ffffff;
 }
 
-/* =========================
-   PAGE TITLE
-========================= */
 .book_container h2 {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 700;
   margin-bottom: 24px;
+  text-align: center;
 }
 
-/* =========================
-   FIELD WRAPPER SPACING
-   (KEY FIX)
-========================= */
-.book_container .fieldWrapper {
-  margin-bottom: 16px;
-}
-
-/* Make inputs stretch full width in booking */
-.book_container .text_field {
+/* Inputs */
+.book_container input,
+.book_container select,
+.book_container textarea {
   width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
 }
 
-/* =========================
-   LOCATION SECTION
-========================= */
-.book_container .btn-secondary {
-  margin-top: 8px;
+.book_container input:focus,
+.book_container select:focus,
+.book_container textarea:focus {
+  border-color: #3b82f6;
 }
 
-.book_container p {
+/* Location */
+.location-success {
   font-size: 14px;
+  color: #22c55e;
+  margin: 10px 0;
 }
 
-/* =========================
-   PRIMARY CTA
-========================= */
-.book_container .center {
+/* CTA */
+.center {
   margin-top: 24px;
 }
 
-.book_container .center button,
-.book_container .center .pay-btn {
+.width_loc {
   width: 100%;
 }
-.white {
-  color: #ffffff;
-}
-.mb-3 {
-  margin-bottom: -4px;
-}
-/* =========================
-   MOBILE (MATCH HOME)
-========================= */
+
+/* Mobile */
 @media (max-width: 768px) {
   .book_bg {
-    padding: 30px 16px;
+    padding: 16px;
+  }
+
+  .book_container {
+    padding: 16px;
   }
 
   .book_container h2 {
-    font-size: 24px;
-    text-align: center;
+    font-size: 22px;
   }
 }

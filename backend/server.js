@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 
 import orderRoutes from "./routes/orderRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 import authRoutes from "./routes/authRoutes.js"
 
@@ -18,6 +19,7 @@ mongoose
   .catch(err => console.error(err));
 
 app.use("/api/orders", orderRoutes);
+app.use("/api/admin", adminRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/auth", authRoutes);
 

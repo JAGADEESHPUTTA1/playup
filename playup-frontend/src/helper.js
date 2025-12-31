@@ -4,7 +4,7 @@ export const getDays = (startDate, endDate) => {
     return Math.ceil((e - s) / (1000 * 60 * 60 * 24)) + 1;
   };
 
-export   const calculateBookingPrice = ({
+export const calculateBookingPrice = ({
     consoleType,
     startDate,
     endDate,

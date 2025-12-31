@@ -8,13 +8,41 @@
   margin-bottom: 16px;
 }
 
+/* -------- Card -------- */
 .details-card {
   background: #111827;
   border: 1px solid #1f2937;
   border-radius: 12px;
   padding: 16px;
+  position: relative; /* REQUIRED for inline edit button */
 }
 
+.edit-order {
+  padding-top: 44px !important;
+}
+
+/* -------- Inline Edit Button -------- */
+.edit-inline-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0.85;
+}
+
+.edit-inline-btn:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+/* -------- Details -------- */
 .detail-row {
   display: flex;
   justify-content: space-between;
@@ -37,24 +65,85 @@
   line-height: 1.4;
 }
 
+/* -------- Status -------- */
 .status {
   text-transform: capitalize;
   font-weight: 600;
 }
 
-.status.pending { color: #facc15; }
-.status.confirmed { color: #38bdf8; }
-.status.active { color: #22c55e; }
-.status.completed { color: #a3e635; }
-.status.cancelled { color: #ef4444; }
+.status.pending {
+  color: #facc15;
+}
+
+.status.confirmed {
+  color: #38bdf8;
+}
+
+.status.active {
+  color: #22c55e;
+}
+
+.status.completed {
+  color: #a3e635;
+}
+
+.status.cancelled {
+  color: #ef4444;
+}
+
+/* -------- Footer Buttons -------- */
+.order_footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  gap: 12px;
+}
 
 .back-btn {
-  margin-top: 20px;
-  width: 100%;
+  width: 49%;
   padding: 12px;
   background: #22c55e;
   border: none;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
+}
+
+.primaryColor {
+  background-color: #3b82f6;
+  color: #ffffff;
+}
+
+.back-btn-width {
+  width: 100% !important;
+}
+
+/* -------- Mobile -------- */
+@media (max-width: 640px) {
+  .order-details {
+    width: 100%;
+    padding: 12px;
+  }
+
+  .detail-row {
+    flex-direction: column;
+    gap: 4px;
+    font-size: 13px;
+  }
+
+  .order_footer {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .back-btn {
+    width: 100%;
+    margin-top: 0;
+  }
+
+  .edit-inline-btn {
+    top: 10px;
+    right: 10px;
+    font-size: 13px;
+  }
 }

@@ -1,15 +1,18 @@
 import { useState } from "react";
 import { api } from "../../services/api";
-import { calculateBookingPrice } from "../../helper";
 import { useNavigate } from "react-router-dom";
 import TextField from "../../components/TextField/TextField";
 import "./Book.css";
 import Loader from "../../components/Loader/Loader";
 import CheckCircle from "../../images/CheckCircle";
+import { useToast } from "../../components/Toast/ToastContext";
 
 export default function Book() {
   const navigate = useNavigate();
+  const { showToast } = useToast();
+
   const [loader, setLoader] = useState(false);
+
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -30,21 +33,21 @@ export default function Book() {
 
   const getLocation = () => {
     if (!navigator.geolocation) {
-      alert("Geolocation is not supported by your browser");
+      showToast("Location is not supported on this device.", "error");
       return;
     }
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
-
         setForm((prev) => ({
           ...prev,
           location: `${latitude}, ${longitude}`,
         }));
+        showToast("Location captured successfully", "success");
       },
       () => {
-        alert("Please allow location access to continue");
+        showToast("Please allow location access to continue.", "error");
       }
     );
   };
@@ -54,34 +57,13 @@ export default function Book() {
   };
 
   const submitBooking = async () => {
+    if (!form.location || !form.rentalStartDate || !form.rentalEndDate) {
+      showToast("Please fill all required details to continue.", "error");
+      return;
+    }
+
     try {
       setLoader(true);
-      const price = calculateBookingPrice({
-        consoleType: form.consoleType.toLowerCase(),
-        startDate: form.rentalStartDate,
-        endDate: form.rentalEndDate,
-        hours: Number(form.hours || 0),
-        extraControllers: Math.max(Number(form.noOfControllers || 1) - 1, 0),
-      });
-
-      const isSameDay =
-        form.rentalStartDate &&
-        form.rentalEndDate &&
-        form.rentalStartDate === form.rentalEndDate;
-
-      if (
-        !form.location ||
-        !form.rentalStartDate ||
-        !form.rentalEndDate
-      ) {
-        alert("Please fill all required fields");
-        return;
-      }
-
-      if (isSameDay && !form.hours) {
-        alert("Please select hours for same-day booking");
-        return;
-      }
 
       const res = await api.post("/orders", {
         consoleType: form.consoleType,
@@ -89,18 +71,26 @@ export default function Book() {
         rentalStartDate: form.rentalStartDate,
         rentalEndDate: form.rentalEndDate,
         hours: form.hours,
-        rentAmount: price,
         depositAmount: 0,
         deliveryAddress: form.location,
-        gamesList:form.gamesList
+        gamesList: form.gamesList,
       });
 
       localStorage.setItem("orderId", res.data.data._id);
       localStorage.setItem("amount", res.data.data.rentAmount);
 
+      showToast(
+        "Booking created successfully. Proceeding to payment.",
+        "success"
+      );
+
       navigate("/payment");
     } catch (error) {
-      console.log("Something went wrong...");
+      showToast(
+        error?.response?.data?.message ||
+          "Failed to create booking. Please try again.",
+        "error"
+      );
     } finally {
       setLoader(false);
     }
@@ -109,22 +99,21 @@ export default function Book() {
   return (
     <div className="book_bg">
       {loader && <Loader text="Confirming your booking..." />}
+
       <div className="book_container">
-        <h2 className="white">Book Your Console</h2>
+        <h2>Book Your Console</h2>
 
-        <div style={{ marginTop: 12, marginBottom: 12 }}>
-          {!form?.location && (
-            <button type="button" className="btn-primary" onClick={getLocation}>
-              📍 Share Current Location
-            </button>
-          )}
+        {!form.location && (
+          <button className="btn-primary width_loc" onClick={getLocation}>
+            📍 Share Current Location
+          </button>
+        )}
 
-          {form.location && (
-            <p style={{ color: "#25D366", marginTop: 6, fontSize: 18 }}>
-              Location captured <CheckCircle className="mb-3" size={20} />
-            </p>
-          )}
-        </div>
+        {form.location && (
+          <p className="location-success">
+            Location captured <CheckCircle size={18} />
+          </p>
+        )}
 
         <TextField
           labelName="Console Type"
@@ -150,6 +139,7 @@ export default function Book() {
           ]}
           onChange={(e) => formHandler("noOfControllers", e.target.value)}
         />
+
         <TextField
           labelName="Games You Want (2 Free Included)"
           textarea
@@ -190,9 +180,11 @@ export default function Book() {
             />
           )}
 
-        <button className="btn-primary center" onClick={submitBooking}>
-          Proceed to Payment
-        </button>
+        <div className="center">
+          <button className="btn-primary" onClick={submitBooking}>
+            Proceed to Payment
+          </button>
+        </div>
       </div>
     </div>
   );

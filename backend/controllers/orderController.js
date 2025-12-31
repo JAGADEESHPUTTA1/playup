@@ -1,10 +1,7 @@
 import Order from "../models/Order.js";
 import User from "../models/User.js";
+import { calculateBookingPrice } from "../utils/PriceCalculator.js";
 
-/**
- * CREATE ORDER (USER)
- * JWT REQUIRED
- */
 export const createOrder = async (req, res) => {
   try {
     const {
@@ -13,7 +10,6 @@ export const createOrder = async (req, res) => {
       rentalStartDate,
       rentalEndDate,
       hours,
-      rentAmount,
       depositAmount,
       deliveryAddress,
       gamesList,
@@ -24,7 +20,6 @@ export const createOrder = async (req, res) => {
       !noOfControllers ||
       !rentalStartDate ||
       !rentalEndDate ||
-      !rentAmount ||
       !deliveryAddress ||
       !gamesList
     ) {
@@ -34,34 +29,24 @@ export const createOrder = async (req, res) => {
       });
     }
 
-    // 🔒 BLOCK DUPLICATE ACTIVE ORDERS
-    const existingOrder = await Order.findOne({
-      user: req.user.userId,
-      status: { $nin: ["completed", "cancelled"] },
-    });
-
-    if (existingOrder) {
-      return res.status(409).json({
-        success: false,
-        message:
-          "You already have an ongoing order. Please complete or cancel it before creating a new one.",
-      });
-    }
-
-    // 🔐 Get user from JWT
     const user = await User.findById(req.user.userId);
-
     if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid user",
-      });
+      return res.status(401).json({ success: false, message: "Invalid user" });
     }
+    const normalizedConsoleType = consoleType?.toLowerCase();
+    const controllersCount = Number(noOfControllers) || 1;
+
+    // 🔥 BACKEND PRICE CALCULATION
+    const rentAmount = calculateBookingPrice({
+      consoleType: normalizedConsoleType,
+      rentalStartDate,
+      rentalEndDate,
+      hours,
+      noOfControllers: controllersCount,
+    });
 
     const order = await Order.create({
       user: user._id,
-
-      // denormalized for admin ease
       customerName: user.name,
       customerPhone: user.phone,
 
@@ -71,9 +56,9 @@ export const createOrder = async (req, res) => {
       rentalEndDate,
       hours,
       gamesList,
-      rentAmount,
-      depositAmount,
 
+      rentAmount, // ✅ backend calculated
+      depositAmount,
       deliveryAddress,
 
       paymentStatus: "pending",
@@ -94,10 +79,6 @@ export const createOrder = async (req, res) => {
   }
 };
 
-/**
- * GET MY ORDERS (USER)
- * JWT REQUIRED
- */
 export const getMyOrders = async (req, res) => {
   try {
     const orders = await Order.find({
@@ -116,10 +97,6 @@ export const getMyOrders = async (req, res) => {
   }
 };
 
-/**
- * GET ALL ORDERS (ADMIN)
- * JWT + ADMIN ROLE REQUIRED
- */
 export const getAllOrder = async (req, res) => {
   try {
     if (req.user.role !== "admin") {
@@ -247,6 +224,123 @@ export const updateOrderStatus = async (req, res) => {
     res.status(500).json({
       success: false,
       message: error.message,
+    });
+  }
+};
+
+export const updateOrderDetails = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const updates = req.body;
+
+    // 🔍 Find order
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    // 🔒 Permission check
+    if (req.user.role !== "admin") {
+      if (
+        order.user.toString() !== req.user.userId ||
+        order.paymentStatus !== "pending"
+      ) {
+        return res.status(403).json({
+          success: false,
+          message:
+            "Order cannot be edited after payment. Please contact support.",
+        });
+      }
+    }
+
+    // ✅ Allowed editable fields
+    const allowedFields = [
+      "rentalStartDate",
+      "rentalEndDate",
+      "hours",
+      "noOfControllers",
+      "gamesList",
+      "consoleType",
+    ];
+
+    allowedFields.forEach((field) => {
+      if (updates[field] !== undefined) {
+        order[field] = updates[field];
+      }
+    });
+
+    // 🔐 Normalize values BEFORE price calc
+    const normalizedConsoleType = order.consoleType?.toLowerCase();
+    const normalizedHours = Number(order.hours) || 0;
+    const normalizedControllers = Number(order.noOfControllers) || 1;
+
+    if (!normalizedConsoleType) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid console type",
+      });
+    }
+
+    // 🔥 Recalculate price (SINGLE SOURCE OF TRUTH)
+    order.rentAmount = calculateBookingPrice({
+      consoleType: normalizedConsoleType,
+      rentalStartDate: order.rentalStartDate,
+      rentalEndDate: order.rentalEndDate,
+      hours: normalizedHours,
+      noOfControllers: normalizedControllers,
+    });
+
+    await order.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Order updated successfully",
+      data: order,
+    });
+  } catch (error) {
+    console.error("UPDATE ORDER ERROR:", error.message);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to update order details",
+      error: error.message,
+    });
+  }
+};
+
+export const adminStats = async (req, res) => {
+  try {
+    if (req.user.role !== "admin") {
+      return res.status(403).json({
+        success: false,
+        message: "Access Denied, Admin access only",
+      });
+    }
+
+    const [totalOrders, pendingOrders, returnedOrders, activeOrders] =
+      await Promise.all([
+        Order.countDocuments(),
+        Order.countDocuments({ status: "pending" }),
+        Order.countDocuments({ status: "returned" }),
+        Order.countDocuments({ status: "active" }),
+      ]);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        totalOrders,
+        pendingOrders,
+        returnedOrders,
+        activeOrders,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+      message: "Failed to fetch stats",
     });
   }
 };
