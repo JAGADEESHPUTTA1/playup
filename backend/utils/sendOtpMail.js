@@ -3,22 +3,16 @@ import nodemailer from "nodemailer";
 export const sendOtpMail = async (email, otp) => {
   try {
     const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false, // TLS
+      host: process.env.MAIL_HOST, // sandbox.smtp.mailtrap.io
+      port: Number(process.env.MAIL_PORT), // 2525
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS, // Gmail APP PASSWORD
+        user: process.env.MAIL_USER,
+        pass: process.env.MAIL_PASS,
       },
-      connectionTimeout: 10_000, // prevent hanging on Render
     });
 
-    // 🔍 Verify SMTP connection (fails fast if blocked)
-    await transporter.verify();
-    console.log("✅ Gmail SMTP verified");
-
     await transporter.sendMail({
-      from: `"Play Up" <${process.env.EMAIL_USER}>`,
+      from: `"Play Up" <no-reply@playup.app>`,
       to: email,
       subject: "Your Play Up OTP Code",
       html: `
@@ -125,9 +119,9 @@ export const sendOtpMail = async (email, otp) => {
       `,
     });
 
-    console.log("✅ OTP email sent successfully");
+    console.log("✅ OTP sent via Mailtrap");
   } catch (error) {
-    console.error("❌ OTP MAIL ERROR:", error);
-    throw error; // let controller handle response
+    console.error("❌ Mailtrap OTP error:", error);
+    throw error;
   }
 };
