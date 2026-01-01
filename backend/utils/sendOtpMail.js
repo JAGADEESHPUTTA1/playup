@@ -1,18 +1,11 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const sendOtpMail = async (email, otp) => {
   try {
-    const transporter = nodemailer.createTransport({
-      host: process.env.MAIL_HOST, // sandbox.smtp.mailtrap.io
-      port: Number(process.env.MAIL_PORT), // 2525
-      auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS,
-      },
-    });
-
-    await transporter.sendMail({
-      from: `"Play Up" <no-reply@playup.app>`,
+    await resend.emails.send({
+      from: "Play Up <onboarding@resend.dev>",
       to: email,
       subject: "Your Play Up OTP Code",
       html: `
@@ -29,99 +22,38 @@ export const sendOtpMail = async (email, otp) => {
       overflow: hidden;
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     ">
-      
-      <!-- Header -->
-      <div style="
-        background-color: #1b2240;
-        padding: 20px;
-        text-align: center;
-      ">
-        <h1 style="
-          color: #ffffff;
-          margin: 0;
-          font-size: 22px;
-          letter-spacing: 1px;
-        ">
-          🎮 Play Up
-        </h1>
-        <p style="
-          color: #cfd5ff;
-          margin: 6px 0 0;
-          font-size: 14px;
-        ">
-          Console Rental Platform
-        </p>
+      <div style="background:#1b2240;padding:20px;text-align:center;">
+        <h1 style="color:#fff;margin:0;">🎮 Play Up</h1>
+        <p style="color:#cfd5ff;font-size:14px;">Console Rental Platform</p>
       </div>
-
-      <!-- Body -->
-      <div style="padding: 24px; text-align: center;">
-        <h2 style="
-          color: #1b2240;
-          margin-bottom: 12px;
-          font-size: 20px;
-        ">
-          Your One-Time Password
-        </h2>
-
-        <p style="
-          color: #555;
-          font-size: 14px;
-          margin-bottom: 20px;
-        ">
-          Use the OTP below to verify your account on <strong>Play Up</strong>.
-        </p>
-
-        <!-- OTP Box -->
+      <div style="padding:24px;text-align:center;">
+        <h2 style="color:#1b2240;">Your One-Time Password</h2>
         <div style="
-          display: inline-block;
-          background-color: #f1f3ff;
-          padding: 14px 24px;
-          border-radius: 6px;
-          font-size: 26px;
-          font-weight: bold;
-          letter-spacing: 6px;
-          color: #29366a;
-          margin-bottom: 16px;
-        ">
+          display:inline-block;
+          background:#f1f3ff;
+          padding:14px 24px;
+          border-radius:6px;
+          font-size:26px;
+          font-weight:bold;
+          letter-spacing:6px;
+          color:#29366a;">
           ${otp}
         </div>
-
-        <p style="
-          color: #777;
-          font-size: 13px;
-          margin-top: 12px;
-        ">
+        <p style="font-size:13px;color:#777;margin-top:12px;">
           This OTP is valid for <strong>5 minutes</strong>.
         </p>
-
-        <p style="
-          color: #999;
-          font-size: 12px;
-          margin-top: 20px;
-        ">
-          If you did not request this OTP, please ignore this email.
-        </p>
       </div>
-
-      <!-- Footer -->
-      <div style="
-        background-color: #f4f6fb;
-        padding: 12px;
-        text-align: center;
-        font-size: 11px;
-        color: #888;
-      ">
+      <div style="background:#f4f6fb;padding:12px;text-align:center;font-size:11px;color:#888;">
         © ${new Date().getFullYear()} Play Up. All rights reserved.
       </div>
-
     </div>
   </div>
       `,
     });
 
-    console.log("✅ OTP sent via Mailtrap");
-  } catch (error) {
-    console.error("❌ Mailtrap OTP error:", error);
-    throw error;
+    console.log("✅ OTP sent via Resend");
+  } catch (err) {
+    console.error("❌ Resend email error:", err);
+    throw err;
   }
 };
