@@ -29,7 +29,6 @@ export default function AdminOrders() {
 
   useEffect(() => {
     fetchOrders();
-    // eslint-disable-next-line
   }, [statusFilter]);
 
   const fetchOrders = async () => {
@@ -59,6 +58,7 @@ export default function AdminOrders() {
   };
 
   const updateStatus = async (orderId, status) => {
+    setLoading(true);
     try {
       setUpdatingId(orderId);
       await api.patch(`/admin/orders/${orderId}/status`, { status });
@@ -76,6 +76,7 @@ export default function AdminOrders() {
       );
     } finally {
       setUpdatingId(null);
+      setLoading(false);
     }
   };
 
@@ -95,7 +96,10 @@ export default function AdminOrders() {
     window.open(`https://www.google.com/maps?q=${lat},${lng}`, "_blank");
   };
 
-  if (loading) return <Loader text="Loading orders..." />;
+  if (loading)
+    return (
+      <Loader text={updatingId ? "Updating Order..." : "Loading orders..."} />
+    );
 
   return (
     <div className="admin-orders">

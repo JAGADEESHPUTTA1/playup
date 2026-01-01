@@ -3,7 +3,9 @@ export const getDays = (startDate, endDate) => {
     const e = new Date(endDate + "T00:00:00");
     return Math.ceil((e - s) / (1000 * 60 * 60 * 24)) + 1;
   };
-
+export const openDatePicker = (e) => {
+    e.currentTarget.showPicker();
+  };
 export const calculateBookingPrice = ({
     consoleType,
     startDate,

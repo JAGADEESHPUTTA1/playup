@@ -57,6 +57,17 @@ Thank you.
                 <WhatsappIcon /> WhatsApp Us
               </button>
             </div>
+
+            {/* 🌟 Long-term discount strip */}
+            <div className="long-rental-info">
+              <span className="info-icon">💡</span>
+              <p>
+                <strong>Long-term rentals (10+ days)</strong> come with
+                <span className="highlight"> discounted pricing</span>.
+                <br />
+                Contact us on WhatsApp for the best deal.
+              </p>
+            </div>
           </div>
         </div>
       </main>
@@ -119,8 +130,8 @@ Thank you.
         <div className="container">
           <h3>Need help or custom rental?</h3>
           <p>
-            Chat with us on WhatsApp for instant support, availability,
-            and special requests.
+            Chat with us on WhatsApp for instant support, availability, and
+            special requests.
           </p>
 
           <button className="btn-whatsapp large" onClick={whatsappHandler}>

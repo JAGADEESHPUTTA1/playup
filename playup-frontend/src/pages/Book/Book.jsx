@@ -6,6 +6,7 @@ import "./Book.css";
 import Loader from "../../components/Loader/Loader";
 import CheckCircle from "../../images/CheckCircle";
 import { useToast } from "../../components/Toast/ToastContext";
+import { openDatePicker } from "../../helper";
 
 export default function Book() {
   const navigate = useNavigate();
@@ -50,10 +51,6 @@ export default function Book() {
         showToast("Please allow location access to continue.", "error");
       }
     );
-  };
-
-  const openDatePicker = (e) => {
-    e.currentTarget.showPicker();
   };
 
   const submitBooking = async () => {

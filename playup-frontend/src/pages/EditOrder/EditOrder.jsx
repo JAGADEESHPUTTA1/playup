@@ -5,11 +5,10 @@ import Loader from "../../components/Loader/Loader";
 import TextField from "../../components/TextField/TextField";
 import "./EditOrder.css";
 import { useAuth } from "../../Context/AuthContext";
-import { useToast } from "../../components/Toast/ToastContext";
+import { openDatePicker } from "../../helper";
 
 export default function EditOrder() {
   const { user } = useAuth();
-  const { showToast } = useToast();
   const { orderId } = useParams();
   const navigate = useNavigate();
 
@@ -23,6 +22,7 @@ export default function EditOrder() {
     hours: "",
     noOfControllers: 1,
     gamesList: "",
+    deliveryAddress: "",
   });
 
   useEffect(() => {
@@ -31,9 +31,8 @@ export default function EditOrder() {
         const res = await api.get(`/orders/${orderId}`);
         const o = res.data.data;
 
-        // 🔒 Block edit if payment done (non-admin)
+        // 🔒 Block edit if payment done
         if (o.paymentStatus !== "pending" && user.role !== "admin") {
-          showToast("This order can’t be edited after payment.", "error");
           navigate(`/orders/${orderId}`);
           return;
         }
@@ -46,12 +45,7 @@ export default function EditOrder() {
           noOfControllers: o.noOfControllers,
           gamesList: o.gamesList || "",
         });
-      } catch (error) {
-        showToast(
-          error?.response?.data?.message ||
-            "Unable to load order details. Please try again.",
-          "error"
-        );
+      } catch {
         navigate("/my-orders");
       } finally {
         setLoading(false);
@@ -59,7 +53,7 @@ export default function EditOrder() {
     };
 
     fetchOrder();
-  }, [orderId, navigate, user.role, showToast]);
+  }, [orderId, navigate]);
 
   const formHandler = (field, value) => {
     setForm({ ...form, [field]: value });
@@ -68,28 +62,21 @@ export default function EditOrder() {
   const handleSave = async () => {
     try {
       setSaving(true);
-
       await api.patch(`/orders/${orderId}/edit`, form);
-
-      showToast("Order updated successfully.", "success");
-
       if (user.role === "admin") {
         navigate(`/admin/orders/${orderId}`);
       } else {
         navigate("/payment");
       }
-    } catch (error) {
-      showToast(
-        error?.response?.data?.message ||
-          "Failed to update order. Please try again.",
-        "error"
-      );
+    } catch {
+      alert("Failed to update order");
     } finally {
       setSaving(false);
     }
   };
 
-  if (loading) return <Loader text="Loading order..." />;
+  if (loading || saving)
+    return <Loader text={saving ? "Saving changes..." : "Loading order..."} />;
 
   return (
     <div className="edit-order-wrapper">
@@ -125,6 +112,7 @@ export default function EditOrder() {
           labelName="Start Date"
           type="date"
           value={form.rentalStartDate}
+          onClick={openDatePicker}
           onChange={(e) => formHandler("rentalStartDate", e.target.value)}
         />
 
@@ -132,6 +120,8 @@ export default function EditOrder() {
         <TextField
           labelName="End Date"
           type="date"
+          onClick={openDatePicker}
+          min={form.rentalStartDate}
           value={form.rentalEndDate}
           onChange={(e) => formHandler("rentalEndDate", e.target.value)}
         />
