@@ -240,7 +240,7 @@ export default function Login() {
         {mode === "login" && step === "form" && (
           <>
             <TextField
-              placeholder="Email or Mobile Number"
+              placeholder="Email or Mobile Numberv"
               name="identifier"
               value={form.identifier}
               onChange={handleChange}
