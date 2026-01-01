@@ -1,7 +1,0 @@
-{
-  "dependencies": {
-    "@react-google-maps/api": "^2.20.8",
-    "express-rate-limit": "^8.2.1",
-    "helmet": "^8.1.0"
-  }
-}
