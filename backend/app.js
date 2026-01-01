@@ -4,47 +4,104 @@ import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 
+import authRoutes from "./routes/authRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
-import authRoutes from "./routes/authRoutes.js";
 
 const app = express();
 
-/* -------- Security Headers -------- */
-app.use(helmet());
+/* ===============================
+   CORS (MUST BE FIRST)
+================================ */
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://playuprentals.vercel.app",
+];
 
-/* -------- Rate Limiting (GLOBAL) -------- */
 app.use(
-  rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 100,
-    message: "Too many requests, try again later",
+  cors({
+    origin: function (origin, callback) {
+      // allow server-to-server / postman
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
-/* -------- Core Middlewares -------- */
-app.use(express.json());
-app.use(cookieParser());
-
-/* -------- CORS (CRITICAL) -------- */
-app.use(
+/* -------- PRE-FLIGHT (CRITICAL FOR OTP) -------- */
+app.options(
+  "*",
   cors({
-    origin: ["http://localhost:5173", "https://playuprentals.vercel.app"],
+    origin: allowedOrigins,
     credentials: true,
   })
 );
 
-/* -------- Routes -------- */
+/* ===============================
+   SECURITY
+================================ */
+app.use(helmet());
+
+/* ===============================
+   RATE LIMITING
+================================ */
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    standardHeaders: true,
+    legacyHeaders: false,
+  })
+);
+
+/* ===============================
+   CORE MIDDLEWARE
+================================ */
+app.use(express.json());
+app.use(cookieParser());
+
+/* ===============================
+   ROUTES
+================================ */
 app.use("/api/auth", authRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/payments", paymentRoutes);
 
-/* -------- Global Error Handler -------- */
+/* ===============================
+   HEALTH CHECK (OPTIONAL)
+================================ */
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "OK" });
+});
+
+/* ===============================
+   GLOBAL ERROR HANDLER
+================================ */
 app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(500).json({ message: "Internal server error" });
+  console.error("ERROR:", err.message);
+
+  // CORS specific error
+  if (err.message === "Not allowed by CORS") {
+    return res.status(403).json({
+      success: false,
+      message: "CORS blocked this request",
+    });
+  }
+
+  res.status(500).json({
+    success: false,
+    message: "Internal server error",
+  });
 });
 
 export default app;

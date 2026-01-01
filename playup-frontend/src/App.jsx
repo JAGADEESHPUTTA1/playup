@@ -9,7 +9,7 @@ import Home from "./pages/Home/Home";
 import Login from "../src/components/Login/Login";
 import MyOrders from "./components/MyOrders/MyOrders";
 import OrderDetails from "./components/OrderDetails/OrderDetails";
-import EditOrder from "./pages/EditOrder/EditOrder"
+import EditOrder from "./pages/EditOrder/EditOrder";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import AdminOrders from "./pages/AdminOrders/AdminOrders";
 import UserRoute from "./components/ProtectedRoutes/UserRoute";
@@ -17,6 +17,7 @@ import AdminRoute from "./components/ProtectedRoutes/AdminRoute";
 import RequireOrder from "./components/ProtectedRoutes/RequireOrder";
 import RequirePayment from "./components/ProtectedRoutes/RequirePayment";
 import RootRedirect from "./components/ProtectedRoutes/RootRedirect";
+import NotFound from "./pages/NotFound/NotFound";
 
 export default function App() {
   return (
@@ -59,8 +60,7 @@ export default function App() {
           element={
             <UserRoute>
               <RequirePayment>
-
-              <Success />
+                <Success />
               </RequirePayment>
             </UserRoute>
           }
@@ -124,6 +124,15 @@ export default function App() {
             <AdminRoute>
               <EditOrder />
             </AdminRoute>
+          }
+        />
+
+        <Route
+          path="*"
+          element={
+            <UserRoute>
+              <NotFound />
+            </UserRoute>
           }
         />
       </Routes>
