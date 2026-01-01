@@ -1,14 +1,28 @@
-import { Resend } from "resend";
+import Brevo from "@getbrevo/brevo";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Initialize Brevo Transactional Email API
+const apiInstance = new Brevo.TransactionalEmailsApi();
+
+// Set API key from environment
+apiInstance.setApiKey(
+  Brevo.TransactionalEmailsApiApiKeys.apiKey,
+  process.env.BREVO_API_KEY
+);
 
 export const sendOtpMail = async (email, otp) => {
   try {
-    await resend.emails.send({
-      from: "Play Up <onboarding@resend.dev>",
-      to: email,
+    await apiInstance.sendTransacEmail({
+      sender: {
+        name: "Play Up",
+        email: "no-reply@playup.com", // works on Brevo free tier
+      },
+      to: [
+        {
+          email,
+        },
+      ],
       subject: "Your Play Up OTP Code",
-      html: `
+      htmlContent: `
   <div style="
     font-family: Arial, Helvetica, sans-serif;
     background-color: #f4f6fb;
@@ -26,8 +40,10 @@ export const sendOtpMail = async (email, otp) => {
         <h1 style="color:#fff;margin:0;">🎮 Play Up</h1>
         <p style="color:#cfd5ff;font-size:14px;">Console Rental Platform</p>
       </div>
+
       <div style="padding:24px;text-align:center;">
         <h2 style="color:#1b2240;">Your One-Time Password</h2>
+
         <div style="
           display:inline-block;
           background:#f1f3ff;
@@ -39,10 +55,12 @@ export const sendOtpMail = async (email, otp) => {
           color:#29366a;">
           ${otp}
         </div>
+
         <p style="font-size:13px;color:#777;margin-top:12px;">
           This OTP is valid for <strong>5 minutes</strong>.
         </p>
       </div>
+
       <div style="background:#f4f6fb;padding:12px;text-align:center;font-size:11px;color:#888;">
         © ${new Date().getFullYear()} Play Up. All rights reserved.
       </div>
@@ -51,9 +69,9 @@ export const sendOtpMail = async (email, otp) => {
       `,
     });
 
-    console.log("✅ OTP sent via Resend");
-  } catch (err) {
-    console.error("❌ Resend email error:", err);
-    throw err;
+    console.log("✅ OTP sent via Brevo");
+  } catch (error) {
+    console.error("❌ Brevo email error:", error?.response?.body || error);
+    throw error;
   }
 };
