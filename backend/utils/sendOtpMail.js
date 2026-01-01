@@ -14,7 +14,7 @@ export const sendOtpMail = async (email, otp) => {
     await apiInstance.sendTransacEmail({
       sender: {
         name: "Play Up",
-        email: "no-reply@playup.com", // works on Brevo free tier
+        email: "sunnyjaggu25@gmail.com", // works on Brevo free tier
       },
       to: [
         {
