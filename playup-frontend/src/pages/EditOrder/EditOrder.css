@@ -1,3 +1,6 @@
+/* =====================================
+   PAGE WRAPPER
+===================================== */
 .edit-order-wrapper {
   min-height: calc(100vh - 120px);
   display: flex;
@@ -6,78 +9,116 @@
   padding: 16px;
 }
 
+/* =====================================
+   CARD CONTAINER
+===================================== */
 .edit-order-card {
   width: 100%;
   max-width: 480px;
+
   background: rgba(17, 24, 39, 0.65);
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 14px;
+
   padding: 20px;
-  color: #fff;
+  color: #ffffff;
+
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
 }
 
+/* =====================================
+   TITLE
+===================================== */
 .edit-order-card h2 {
   margin-bottom: 16px;
+  font-size: 20px;
+  font-weight: 600;
 }
 
-.edit-order-card label {
-  display: flex;
-  flex-direction: column;
-  font-size: 14px;
-  margin-bottom: 12px;
-  color: #cbd5f5;
-}
-
+/* =====================================
+   REMOVE CONFLICTING DEFAULT STYLES
+===================================== */
 .edit-order-card input,
 .edit-order-card select,
 .edit-order-card textarea {
-  margin-top: 6px;
-  padding: 10px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #fff;
-  outline: none;
+  all: unset;
 }
 
-.edit-order-card textarea {
-  resize: none;
-  min-height: 70px;
+/* =====================================
+   FIELD SPACING
+===================================== */
+.edit-order-card .fieldWrapper {
+  margin-bottom: 12px;
 }
 
-.edit-order-card input:focus,
-.edit-order-card select:focus,
-.edit-order-card textarea:focus {
-  border-color: #3b82f6;
-}
-
+/* =====================================
+   BUTTONS
+===================================== */
 .edit-actions {
   display: flex;
   gap: 12px;
-  margin-top: 16px;
+  margin-top: 18px;
 }
 
-.edit-actions button {
+/* Primary */
+.btn-primary {
   flex: 1;
   padding: 12px;
-  border-radius: 10px;
-  font-weight: 600;
-  cursor: pointer;
-}
 
-.edit-actions .primary {
   background: #3b82f6;
-  color: #fff;
+  color: #ffffff;
+
+  border: none;
+  border-radius: 10px;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
 }
 
-.edit-actions .secondary {
+.btn-primary:hover {
+  background: #2563eb;
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Secondary */
+.btn-secondary {
+  flex: 1;
+  padding: 12px;
+
   background: transparent;
-  border: 1px solid #3b82f6;
   color: #3b82f6;
+
+  border: 1px solid #3b82f6;
+  border-radius: 10px;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
-/* Mobile */
+.btn-secondary:hover {
+  background: rgba(59, 130, 246, 0.15);
+}
+
+/* =====================================
+   MOBILE OPTIMIZATION
+===================================== */
 @media (max-width: 480px) {
   .edit-order-card {
     padding: 16px;

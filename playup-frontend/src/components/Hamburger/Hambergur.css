@@ -1,20 +1,38 @@
-/* Hamburger Icon */
+/* ================================
+   GLOBAL SAFETY
+================================ */
+html,
+body {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* ================================
+   HAMBURGER ICON
+================================ */
 .hamburger {
   width: 28px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   gap: 5px;
-  z-index: 1001;
+  z-index: 1100;
 }
 
 .hamburger span {
   height: 3px;
-  background: #fff;
+  width: 100%;
+  background: #ffffff;
   border-radius: 2px;
 }
 
-/* Overlay */
+/* ================================
+   OVERLAY
+================================ */
 .menu-overlay {
   position: fixed;
   inset: 0;
@@ -22,35 +40,60 @@
   z-index: 1000;
 }
 
-/* Drawer */
+/* ================================
+   DRAWER (OFF-CANVAS)
+================================ */
 .menu-drawer {
   position: fixed;
   top: 0;
-  right: -260px;
+  right: 0;
+
   width: 260px;
-  height: 100%;
+  height: 100vh;
+
   background: #111827; /* dark slate */
   padding: 20px;
-  transition: right 0.3s ease;
-  z-index: 1001;
+
   display: flex;
   flex-direction: column;
   gap: 15px;
+
+  z-index: 1050;
+
+  /* KEY: hide using transform (NO overflow) */
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  will-change: transform;
 }
 
 .menu-drawer.open {
-  right: 0;
+  transform: translateX(0);
 }
 
+/* ================================
+   CLOSE BUTTON
+================================ */
+.close-btn {
+  align-self: flex-end;
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* ================================
+   MENU CONTENT
+================================ */
 .menu-title {
-  color: #22c55e; /* green accent */
+  color: #22c55e;
   margin-bottom: 20px;
 }
 
 .menu-drawer button {
   background: none;
   border: none;
-  color: #fff;
+  color: #ffffff;
   text-align: left;
   font-size: 16px;
   padding: 10px 0;
@@ -61,73 +104,9 @@
   color: #22c55e;
 }
 
-.logout-btn {
-  margin-top: auto;
-  color: #ef4444;
-}
-/* Hamburger Icon */
-.hamburger {
-  width: 28px;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  z-index: 1001;
-}
-
-.hamburger span {
-  height: 3px;
-  background: #fff;
-  border-radius: 2px;
-}
-
-/* Overlay */
-.menu-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
-}
-
-/* Drawer */
-.menu-drawer {
-  position: fixed;
-  top: 0;
-  right: -260px;
-  width: 260px;
-  height: 100%;
-  background: #111827; /* dark slate */
-  padding: 20px;
-  transition: right 0.3s ease;
-  z-index: 1001;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.menu-drawer.open {
-  right: 0;
-}
-
-.menu-title {
-  color: #22c55e; /* green accent */
-  margin-bottom: 20px;
-}
-
-.menu-drawer button {
-  background: none;
-  border: none;
-  color: #fff;
-  text-align: left;
-  font-size: 16px;
-  padding: 10px 0;
-  cursor: pointer;
-}
-
-.menu-drawer button:hover {
-  color: #22c55e;
-}
-
+/* ================================
+   LOGOUT
+================================ */
 .logout-btn {
   margin-top: auto;
   color: #ef4444;

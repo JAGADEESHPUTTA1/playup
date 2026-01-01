@@ -124,7 +124,7 @@ export default function OrderDetails() {
 
           {order.paymentStatus === "pending" &&
             !order.razorpayPaymentId &&
-            !isAdmin && (
+            !isAdmin  && (
               <button
                 className="back-btn primaryColor"
                 onClick={proceedToPayment}
