@@ -3,7 +3,6 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
-
 import authRoutes from "./routes/authRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
@@ -59,7 +58,7 @@ app.use(
 ================================ */
 app.use(express.json());
 app.use(cookieParser());
-
+app.set("trust proxy", 1);
 /* ===============================
    ROUTES
 ================================ */
