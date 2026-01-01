@@ -9,6 +9,18 @@ import { useToast } from "../../components/Toast/ToastContext";
 
 /* ---------------- VALIDATORS ---------------- */
 
+const validateName = (name) => {
+  if (!name.trim()) return "Full name is required";
+  if (name.trim().length < 3) return "Name must be at least 3 characters";
+  return "";
+};
+
+const validateEmail = (email) => {
+  if (!email) return "Email is required";
+  if (!/\S+@\S+\.\S+/.test(email)) return "Enter a valid email address";
+  return "";
+};
+
 const validatePhone = (phone) => {
   if (!phone) return "Mobile number is required";
   if (!/^[6-9]\d{9}$/.test(phone))
@@ -36,6 +48,7 @@ export default function Login() {
   const [mode, setMode] = useState("login"); // login | signup
   const [step, setStep] = useState("form"); // form | otp
   const [loading, setLoading] = useState(false);
+  const [initializing, setInitializing] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
   const [resendTimer, setResendTimer] = useState(0);
@@ -54,14 +67,14 @@ export default function Login() {
 
   /* ---------------- EFFECTS ---------------- */
 
-  // OTP resend countdown
+  useEffect(() => {
+    const timer = setTimeout(() => setInitializing(false), 300);
+    return () => clearTimeout(timer);
+  }, []);
+
   useEffect(() => {
     if (resendTimer <= 0) return;
-
-    const interval = setInterval(() => {
-      setResendTimer((t) => t - 1);
-    }, 1000);
-
+    const interval = setInterval(() => setResendTimer((t) => t - 1), 1000);
     return () => clearInterval(interval);
   }, [resendTimer]);
 
@@ -71,8 +84,7 @@ export default function Login() {
     const { name, value } = e.target;
 
     if (name === "phone") {
-      const digits = value.replace(/\D/g, "").slice(0, 10);
-      setForm({ ...form, phone: digits });
+      setForm({ ...form, phone: value.replace(/\D/g, "").slice(0, 10) });
     } else if (name === "otp") {
       setForm({ ...form, otp: value.replace(/\D/g, "").slice(0, 6) });
     } else {
@@ -91,7 +103,12 @@ export default function Login() {
     let errors = {};
 
     if (mode === "signup") {
+      const nameError = validateName(form.name);
+      const emailError = validateEmail(form.email);
       const phoneError = validatePhone(form.phone);
+
+      if (nameError) errors.name = nameError;
+      if (emailError) errors.email = emailError;
       if (phoneError) errors.phone = phoneError;
     } else {
       const idError = validateIdentifier(form.identifier);
@@ -105,17 +122,12 @@ export default function Login() {
     }
 
     try {
-      if (mode === "signup") {
-        await api.post("/auth/send-otp", {
-          name: form.name,
-          email: form.email,
-          phone: form.phone,
-        });
-      } else {
-        await api.post("/auth/send-otp", {
-          identifier: form.identifier,
-        });
-      }
+      await api.post(
+        "/auth/send-otp",
+        mode === "signup"
+          ? { name: form.name, email: form.email, phone: form.phone }
+          : { identifier: form.identifier }
+      );
 
       showToast("OTP sent successfully", "success");
       setStep("otp");
@@ -134,28 +146,17 @@ export default function Login() {
   const resendOtp = async () => {
     try {
       setLoading(true);
-      setErrorMsg("");
-
-      if (mode === "signup") {
-        await api.post("/auth/send-otp", {
-          name: form.name,
-          email: form.email,
-          phone: form.phone,
-        });
-      } else {
-        await api.post("/auth/send-otp", {
-          identifier: form.identifier,
-        });
-      }
+      await api.post(
+        "/auth/send-otp",
+        mode === "signup"
+          ? { name: form.name, email: form.email, phone: form.phone }
+          : { identifier: form.identifier }
+      );
 
       showToast("OTP resent successfully", "success");
       setResendTimer(30);
     } catch (error) {
-      const msg =
-        error?.response?.data?.message ||
-        "Unable to resend OTP. Please try again.";
-      showToast(msg, "error");
-      setErrorMsg(msg);
+      showToast("Unable to resend OTP. Try again.", "error");
     } finally {
       setLoading(false);
     }
@@ -164,7 +165,6 @@ export default function Login() {
   const verifyOtp = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setErrorMsg("");
 
     try {
       const res = await api.post("/auth/verify-otp", {
@@ -176,19 +176,10 @@ export default function Login() {
 
       await login(res.data);
       showToast("Login successful", "success");
-      console.log(res.data.user.role, "LOGGEDIN");
 
-      if (res.data.user.role === "admin") {
-        console.log("in admin route");
-        
-        navigate("/admin");
-      } else {
-        navigate("/home");
-      }
+      navigate(res.data.user.role === "admin" ? "/admin" : "/home");
     } catch (error) {
-      const msg =
-        error?.response?.data?.message ||
-        "Invalid or expired OTP. Please try again.";
+      const msg = error?.response?.data?.message || "Invalid or expired OTP.";
       showToast(msg, "error");
       setErrorMsg(msg);
     } finally {
@@ -198,7 +189,9 @@ export default function Login() {
 
   /* ---------------- UI ---------------- */
 
-  if (loading) return <Loader text="Processing..." />;
+  if (initializing || loading) {
+    return <Loader text={initializing ? "Loading..." : "Processing..."} />;
+  }
 
   return (
     <div className="auth-container">
@@ -208,7 +201,6 @@ export default function Login() {
       >
         <h2>{mode === "signup" ? "Signup" : "Login"}</h2>
 
-        {/* SIGNUP */}
         {mode === "signup" && step === "form" && (
           <>
             <TextField
@@ -217,6 +209,9 @@ export default function Login() {
               value={form.name}
               onChange={handleChange}
             />
+            {fieldErrors.name && (
+              <span className="auth-error">{fieldErrors.name}</span>
+            )}
 
             <TextField
               placeholder="Email"
@@ -225,22 +220,23 @@ export default function Login() {
               value={form.email}
               onChange={handleChange}
             />
+            {fieldErrors.email && (
+              <span className="auth-error">{fieldErrors.email}</span>
+            )}
 
             <TextField
               placeholder="Mobile Number"
               type="tel"
               name="phone"
-              maxLength={10}
               value={form.phone}
               onChange={handleChange}
             />
             {fieldErrors.phone && (
-              <p className="auth-error">{fieldErrors.phone}</p>
+              <span className="auth-error">{fieldErrors.phone}</span>
             )}
           </>
         )}
 
-        {/* LOGIN */}
         {mode === "login" && step === "form" && (
           <>
             <TextField
@@ -250,12 +246,11 @@ export default function Login() {
               onChange={handleChange}
             />
             {fieldErrors.identifier && (
-              <p className="auth-error">{fieldErrors.identifier}</p>
+              <span className="auth-error">{fieldErrors.identifier}</span>
             )}
           </>
         )}
 
-        {/* OTP */}
         {step === "otp" && (
           <TextField
             placeholder="Enter OTP"
@@ -280,14 +275,13 @@ export default function Login() {
           </button>
         )}
 
-        {errorMsg && <p className="auth-error">{errorMsg}</p>}
+        {errorMsg && <span className="auth-error">{errorMsg}</span>}
 
         {step === "form" && (
           <p
             className="switch-auth"
             onClick={() => {
               setMode(mode === "login" ? "signup" : "login");
-              setStep("form");
               setForm({
                 name: "",
                 email: "",

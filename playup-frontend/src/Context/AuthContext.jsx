@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { api } from "../services/api";
+import Loader from "../components/Loader/Loader";
 
 const AuthContext = createContext(null);
 
@@ -13,7 +14,7 @@ export const AuthProvider = ({ children }) => {
       try {
         const res = await api.get("/auth/me");
         setUser(res.data.user);
-      } catch (err) {
+      } catch {
         setUser(null);
       } finally {
         setLoading(false);
@@ -29,17 +30,21 @@ export const AuthProvider = ({ children }) => {
     setUser(res.data.user);
   };
 
-  // 🔒 Logout (cookie cleared in backend — next step)
+  // 🔒 Logout
   const logout = async () => {
-  try {
-    await api.post("/auth/logout");
-  } catch (err) {
-    // ignore error, still clear state
-  } finally {
-    setUser(null);
-  }
-};
+    try {
+      await api.post("/auth/logout");
+    } catch {
+      // ignore
+    } finally {
+      setUser(null);
+    }
+  };
 
+  /* 🚫 BLOCK RENDER UNTIL AUTH IS READY */
+  if (loading) {
+    return <Loader text="Loading..." />;
+  }
 
   return (
     <AuthContext.Provider
