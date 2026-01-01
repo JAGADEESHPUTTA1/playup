@@ -30,7 +30,7 @@ app.use(cookieParser());
 /* -------- CORS (CRITICAL) -------- */
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://YOUR_VERCEL_APP.vercel.app"],
+    origin: ["http://localhost:5173", "https://playuprentals.vercel.app"],
     credentials: true,
   })
 );
