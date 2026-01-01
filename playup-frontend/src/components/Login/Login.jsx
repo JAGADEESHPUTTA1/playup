@@ -253,7 +253,7 @@ export default function Login() {
 
         {step === "otp" && (
           <TextField
-            placeholder="Enter OTP"
+            placeholder="Enter OTP   fghjkl"
             name="otp"
             value={form.otp}
             onChange={handleChange}
@@ -261,7 +261,7 @@ export default function Login() {
         )}
 
         <button type="submit" className="verify">
-          {step === "form" ? "Send OTP" : "Verify OTP"}
+          {step === "form" ? "Send OTP vsrv " : "Verify OTP"}
         </button>
 
         {step === "otp" && (
