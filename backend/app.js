@@ -22,7 +22,7 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: function (origin, callback) {
-      // allow server-to-server / postman
+      // Allow Postman / server-side requests
       if (!origin) return callback(null, true);
 
       if (allowedOrigins.includes(origin)) {
@@ -34,15 +34,6 @@ app.use(
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
-
-/* -------- PRE-FLIGHT (CRITICAL FOR OTP) -------- */
-app.options(
-  "(.*)",
-  cors({
-    origin: allowedOrigins,
-    credentials: true,
   })
 );
 
@@ -78,7 +69,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/payments", paymentRoutes);
 
 /* ===============================
-   HEALTH CHECK (OPTIONAL)
+   HEALTH CHECK
 ================================ */
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "OK" });
@@ -90,7 +81,6 @@ app.get("/health", (req, res) => {
 app.use((err, req, res, next) => {
   console.error("ERROR:", err.message);
 
-  // CORS specific error
   if (err.message === "Not allowed by CORS") {
     return res.status(403).json({
       success: false,
