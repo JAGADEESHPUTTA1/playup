@@ -1,6 +1,6 @@
 import Order from "../models/Order.js";
 import User from "../models/User.js";
-import { calculateBookingPrice } from "../utils/PriceCalculator.js";
+import { calculateBookingPrice } from "../utils/priceCalculator.js";
 
 export const createOrder = async (req, res) => {
   try {
