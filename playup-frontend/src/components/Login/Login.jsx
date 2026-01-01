@@ -240,7 +240,7 @@ export default function Login() {
         {mode === "login" && step === "form" && (
           <>
             <TextField
-              placeholder="Email or Mobile Numberv"
+              placeholder="Email or Mobile Number"
               name="identifier"
               value={form.identifier}
               onChange={handleChange}
@@ -253,7 +253,7 @@ export default function Login() {
 
         {step === "otp" && (
           <TextField
-            placeholder="Enter OTP   fghjkl"
+            placeholder="Enter OTP"
             name="otp"
             value={form.otp}
             onChange={handleChange}
@@ -261,7 +261,7 @@ export default function Login() {
         )}
 
         <button type="submit" className="verify">
-          {step === "form" ? "Send OTP vsrv " : "Verify OTP"}
+          {step === "form" ? "Send OTP" : "Verify OTP"}
         </button>
 
         {step === "otp" && (
