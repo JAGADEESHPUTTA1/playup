@@ -39,7 +39,7 @@ app.use(
 
 /* -------- PRE-FLIGHT (CRITICAL FOR OTP) -------- */
 app.options(
-  "*",
+  "(.*)",
   cors({
     origin: allowedOrigins,
     credentials: true,
