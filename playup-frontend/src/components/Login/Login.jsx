@@ -261,7 +261,7 @@ export default function Login() {
         )}
 
         <button type="submit" className="verify">
-          {step === "form" ? "Send OTP1" : "Verify OTP1"}
+          {step === "form" ? "Send OTP" : "Verify OTP"}
         </button>
 
         {step === "otp" && (
