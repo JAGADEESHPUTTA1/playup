@@ -9,6 +9,17 @@
       property="og:description"
       content="Rent PlayStation consoles easily"
     />
+    <meta
+  http-equiv="Content-Security-Policy"
+  content="
+    default-src 'self';
+    connect-src 'self' https://playup.onrender.com/;
+    img-src 'self' data:;
+    style-src 'self' 'unsafe-inline';
+    script-src 'self';
+  "
+/>
+
     <meta property="og:image" content="/final-logo.png" />
     <meta property="og:type" content="website" />
 
