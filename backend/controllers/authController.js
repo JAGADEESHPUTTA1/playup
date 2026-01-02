@@ -80,7 +80,7 @@ export const verifyOtp = async (req, res) => {
       user.otpExpiresAt = null;
       await user.save();
 
-      const token = generateToken({ id: user._id });
+      const token = generateToken(user._id);
 
       res.cookie("token", token, {
         httpOnly: true,
@@ -113,7 +113,7 @@ export const verifyOtp = async (req, res) => {
 
       await Otp.deleteOne({ email });
 
-      const token = generateToken({ id: user._id });
+      const token = generateToken(user._id);
 
       res.cookie("token", token, {
         httpOnly: true,
