@@ -59,7 +59,7 @@ export const createOrder = async (req, res) => {
     console.log("before", user);
     
     const order = await Order.create({
-      user: user.id,
+      user: user._id,
       customerName: user.name,
       customerPhone: user.phone,
       consoleType,
@@ -68,11 +68,9 @@ export const createOrder = async (req, res) => {
       rentalEndDate,
       hours,
       gamesList,
-
       rentAmount, // ✅ backend calculated
       depositAmount,
       deliveryAddress,
-
       paymentStatus: "pending",
       status: "pending",
     });
