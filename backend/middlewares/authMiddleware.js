@@ -14,7 +14,7 @@ export const protect = async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET_TOKEN);
 
-    const user = await User.findById(decoded._id).select("-otp -otpExpiresAt");
+    const user = await User.findById(decoded.id).select("-otp -otpExpiresAt");
 
     if (!user) {
       return res.status(401).json({
