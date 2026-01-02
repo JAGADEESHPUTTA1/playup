@@ -95,6 +95,8 @@ export default function Login() {
     setFieldErrors({ ...fieldErrors, [name]: "" });
   };
 
+  /* ---------------- SEND OTP ---------------- */
+
   const sendOtp = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -125,8 +127,16 @@ export default function Login() {
       await api.post(
         "/auth/send-otp",
         mode === "signup"
-          ? { name: form.name, email: form.email, phone: form.phone }
-          : { identifier: form.identifier }
+          ? {
+              name: form.name,
+              email: form.email,
+              phone: form.phone,
+              mode: "signup",
+            }
+          : {
+              identifier: form.identifier,
+              mode: "login",
+            }
       );
 
       showToast("OTP sent successfully", "success");
@@ -143,24 +153,36 @@ export default function Login() {
     }
   };
 
+  /* ---------------- RESEND OTP ---------------- */
+
   const resendOtp = async () => {
     try {
       setLoading(true);
       await api.post(
         "/auth/send-otp",
         mode === "signup"
-          ? { name: form.name, email: form.email, phone: form.phone }
-          : { identifier: form.identifier }
+          ? {
+              name: form.name,
+              email: form.email,
+              phone: form.phone,
+              mode: "signup",
+            }
+          : {
+              identifier: form.identifier,
+              mode: "login",
+            }
       );
 
       showToast("OTP resent successfully", "success");
       setResendTimer(30);
-    } catch (error) {
+    } catch {
       showToast("Unable to resend OTP. Try again.", "error");
     } finally {
       setLoading(false);
     }
   };
+
+  /* ---------------- VERIFY OTP ---------------- */
 
   const verifyOtp = async (e) => {
     e.preventDefault();
