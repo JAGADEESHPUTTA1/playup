@@ -15,7 +15,7 @@ const app = express();
 ================================ */
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://playuprentals.vercel.app",
+  "https://playuprentals.vercel.app","https://playup-1.onrender.com"
 ];
 
 app.use(
