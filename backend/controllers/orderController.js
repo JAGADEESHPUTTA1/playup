@@ -157,7 +157,7 @@ export const getOrderById = async (req, res) => {
     // 🔒 USER CAN SEE ONLY THEIR ORDER
     if (
       req.user.role !== "admin" &&
-      order.user._id.toString() !== req.user.id.toString()
+      order.user._id.toString() !== req.user._id.toString()
     ) {
       return res.status(403).json({
         success: false,

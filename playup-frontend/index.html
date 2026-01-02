@@ -2,8 +2,24 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/text-logo.png"/>
+    <link rel="icon" type="image/png" href="/text-logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
+        default-src 'self';
+        connect-src 'self' https://playup.onrender.com https://checkout.razorpay.com;
+        script-src 'self' https://checkout.razorpay.com 'unsafe-inline';
+        style-src 'self' 'unsafe-inline';
+        img-src 'self' data:;
+        font-src 'self' data:;
+      "
+    />
+
+    <!-- Razorpay MUST be inside head -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
     <meta property="og:title" content="PlayUp" />
     <meta
       property="og:description"
@@ -19,7 +35,7 @@
 
     <title>PlayUp – Rent PlayStation Consoles</title>
   </head>
-  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
