@@ -3,6 +3,9 @@ import Otp from "../models/otp.js";
 import { sendOtpMail } from "../utils/sendOtpMail.js";
 import { generateToken } from "../utils/jwt.js";
 
+/* =========================
+   SEND OTP
+========================= */
 export const sendOtp = async (req, res) => {
   try {
     const { name, email, phone, identifier } = req.body;
@@ -10,19 +13,26 @@ export const sendOtp = async (req, res) => {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const expiry = new Date(Date.now() + 5 * 60 * 1000);
 
+    /* ---------- LOGIN FLOW ---------- */
     if (identifier) {
+      const cleanIdentifier = identifier.trim().toLowerCase();
+
       const user = await User.findOne({
-        $or: [{ email: identifier }, { phone: identifier }],
+        $or: [{ email: cleanIdentifier }, { phone: cleanIdentifier }],
       });
 
       if (!user) {
-        return res
-          .status(404)
-          .json({ message: "No account found. Please signup." });
+        return res.status(404).json({
+          success: false,
+          message: "No account found. Please signup.",
+        });
       }
 
       if (!user.isActive) {
-        return res.status(403).json({ message: "Account is disabled" });
+        return res.status(403).json({
+          success: false,
+          message: "Account is disabled",
+        });
       }
 
       user.otp = otp;
@@ -31,57 +41,87 @@ export const sendOtp = async (req, res) => {
 
       await sendOtpMail(user.email, otp);
 
-      return res.json({ message: "OTP sent to registered email" });
+      return res.json({
+        success: true,
+        message: "OTP sent to registered email",
+      });
     }
 
+    /* ---------- SIGNUP FLOW ---------- */
     if (!name || !email || !phone) {
-      return res
-        .status(400)
-        .json({ message: "Name, email and phone are required" });
+      return res.status(400).json({
+        success: false,
+        message: "Name, email and phone are required",
+      });
     }
+
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanPhone = phone.trim();
 
     const existingUser = await User.findOne({
-      $or: [{ email }, { phone }],
+      $or: [{ email: cleanEmail }, { phone: cleanPhone }],
     });
 
     if (existingUser) {
-      return res
-        .status(409)
-        .json({ message: "User already exists. Please login." });
+      return res.status(409).json({
+        success: false,
+        message: "User already exists. Please login.",
+      });
     }
 
     await Otp.findOneAndUpdate(
-      { email },
-      { name, email, phone, otp, expiresAt: expiry },
+      { email: cleanEmail },
+      {
+        name,
+        email: cleanEmail,
+        phone: cleanPhone,
+        otp,
+        expiresAt: expiry,
+      },
       { upsert: true }
     );
 
-    await sendOtpMail(email, otp);
+    await sendOtpMail(cleanEmail, otp);
 
-    res.json({ message: "OTP sent to email" });
-  } catch {
-    res.status(500).json({ message: "Failed to send OTP" });
+    res.json({
+      success: true,
+      message: "OTP sent to email",
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to send OTP",
+    });
   }
 };
 
+/* =========================
+   VERIFY OTP
+========================= */
 export const verifyOtp = async (req, res) => {
   try {
     const { identifier, email, otp } = req.body;
 
+    /* ---------- LOGIN VERIFY ---------- */
     if (identifier) {
+      const cleanIdentifier = identifier.trim().toLowerCase();
+
       const user = await User.findOne({
-        $or: [{ email: identifier }, { phone: identifier }],
+        $or: [{ email: cleanIdentifier }, { phone: cleanIdentifier }],
       });
 
       if (!user || user.otp !== otp || new Date() > user.otpExpiresAt) {
-        return res.status(400).json({ message: "Invalid or expired OTP" });
+        return res.status(400).json({
+          success: false,
+          message: "Invalid or expired OTP",
+        });
       }
 
       user.otp = null;
       user.otpExpiresAt = null;
       await user.save();
 
-      const token = generateToken(user);
+      const token = generateToken({ id: user._id });
 
       res.cookie("token", token, {
         httpOnly: true,
@@ -92,6 +132,7 @@ export const verifyOtp = async (req, res) => {
       });
 
       return res.json({
+        success: true,
         message: "Login successful",
         user: {
           id: user._id,
@@ -103,27 +144,35 @@ export const verifyOtp = async (req, res) => {
       });
     }
 
+    /* ---------- SIGNUP VERIFY ---------- */
     if (!email || !otp) {
-      return res.status(400).json({ message: "Email and OTP are required" });
+      return res.status(400).json({
+        success: false,
+        message: "Email and OTP are required",
+      });
     }
 
-    const record = await Otp.findOne({ email });
+    const cleanEmail = email.trim().toLowerCase();
+    const record = await Otp.findOne({ email: cleanEmail });
 
     if (!record || record.otp !== otp || new Date() > record.expiresAt) {
-      return res.status(400).json({ message: "Invalid or expired OTP" });
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or expired OTP",
+      });
     }
 
     const user = await User.create({
       name: record.name,
-      email: record.email,
+      email: cleanEmail,
       phone: record.phone,
       role: "user",
       isActive: true,
     });
 
-    await Otp.deleteOne({ email });
+    await Otp.deleteOne({ email: cleanEmail });
 
-    const token = generateToken(user);
+    const token = generateToken({ id: user._id });
 
     res.cookie("token", token, {
       httpOnly: true,
@@ -134,6 +183,7 @@ export const verifyOtp = async (req, res) => {
     });
 
     return res.json({
+      success: true,
       message: "Signup successful",
       user: {
         id: user._id,
@@ -143,11 +193,17 @@ export const verifyOtp = async (req, res) => {
         role: user.role,
       },
     });
-  } catch {
-    res.status(500).json({ message: "OTP verification failed" });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "OTP verification failed",
+    });
   }
 };
 
+/* =========================
+   LOGOUT
+========================= */
 export const logout = (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
@@ -156,5 +212,8 @@ export const logout = (req, res) => {
     path: "/",
   });
 
-  res.json({ success: true, message: "Logged out successfully" });
+  res.json({
+    success: true,
+    message: "Logged out successfully",
+  });
 };

@@ -20,12 +20,13 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+      trim: true,
     },
 
     role: {
       type: String,
       enum: ["user", "admin"],
-      default: "user", // 🔒 everyone is user by default
+      default: "user",
     },
 
     isActive: {
@@ -33,10 +34,19 @@ const userSchema = new mongoose.Schema(
       default: true,
     },
 
-    otp: String,
-    otpExpiresAt: Date,
+    otp: {
+      type: String,
+    },
+
+    otpExpiresAt: {
+      type: Date,
+    },
   },
   { timestamps: true }
 );
+
+// Explicit indexes (recommended)
+userSchema.index({ email: 1 }, { unique: true });
+userSchema.index({ phone: 1 }, { unique: true });
 
 export default mongoose.model("User", userSchema);

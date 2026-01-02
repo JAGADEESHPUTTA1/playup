@@ -12,13 +12,7 @@ router.post("/logout", logout);
 router.get("/me", protect, (req, res) => {
   res.json({
     success: true,
-    user: {
-      id: req.user._id,
-      name: req.user.name,
-      email: req.user.email,
-      phone: req.user.phone,
-      role: req.user.role,
-    },
+    user: req.user,
   });
 });
 
