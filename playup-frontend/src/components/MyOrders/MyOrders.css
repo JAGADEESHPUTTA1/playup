@@ -1,14 +1,21 @@
 .my-orders {
   padding: 16px 80px;
 }
-
+@media (max-width: 768px) {
+  .my-orders {
+    padding: 24px;
+  }
+  .order-card {
+    width: 100% !important;
+  }
+}
 .my-orders h2 {
   margin-bottom: 16px;
 }
 
 .orders-list {
-    flex-wrap: wrap;
-    width: 100%;
+  flex-wrap: wrap;
+  width: 100%;
   display: flex;
   flex-direction: row;
   gap: 12px;
@@ -44,11 +51,21 @@
   font-weight: 600;
 }
 
-.status.pending { color: #facc15; }
-.status.confirmed { color: #38bdf8; }
-.status.active { color: #22c55e; }
-.status.completed { color: #a3e635; }
-.status.cancelled { color: #ef4444; }
+.status.pending {
+  color: #facc15;
+}
+.status.confirmed {
+  color: #38bdf8;
+}
+.status.active {
+  color: #22c55e;
+}
+.status.completed {
+  color: #a3e635;
+}
+.status.cancelled {
+  color: #ef4444;
+}
 
 .my-orders.empty {
   text-align: center;
