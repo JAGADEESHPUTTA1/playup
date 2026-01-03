@@ -9,25 +9,34 @@
       http-equiv="Content-Security-Policy"
       content="
     default-src 'self';
+
+    script-src
+      'self'
+      'unsafe-inline'
+      'unsafe-eval';
+
+    script-src-elem
+      'self'
+      https://checkout.razorpay.com;
+
     connect-src
       'self'
       https://playup.onrender.com
       https://api.razorpay.com
       https://checkout.razorpay.com;
-    script-src
-      'self'
-      https://checkout.razorpay.com
-      'unsafe-inline'
-      'unsafe-eval';
+
     frame-src
       https://checkout.razorpay.com;
+
     style-src
       'self'
       'unsafe-inline';
+
     img-src
       'self'
       data:
       https://*.razorpay.com;
+
     font-src
       'self'
       data:;
