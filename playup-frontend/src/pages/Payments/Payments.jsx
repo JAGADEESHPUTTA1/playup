@@ -60,6 +60,7 @@ export default function Payments() {
         order_id: paymentOrder.data.id,
 
         handler: async function (response) {
+          setLoading(true);
           try {
             await api.post("/payments/verify", {
               razorpay_order_id: response.razorpay_order_id,
@@ -76,6 +77,8 @@ export default function Payments() {
               "Payment verification failed. Please contact support.",
               "error"
             );
+          } finally {
+            setLoading(false);
           }
         },
 
