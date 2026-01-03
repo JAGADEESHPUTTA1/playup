@@ -36,7 +36,7 @@ export const createOrder = async (req, res) => {
       return res.status(401).json({ success: false, message: "Invalid user" });
     }
     const existingPendingOrder = await Order.findOne({
-      user: user.id,status:"pending"
+      user: user._id,status:"pending"
     });
     if (existingPendingOrder) {
       return res.status(409).json({

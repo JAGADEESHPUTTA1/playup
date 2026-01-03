@@ -8,7 +8,6 @@ import { useToast } from "../../components/Toast/ToastContext";
 export default function Payments() {
   const navigate = useNavigate();
   const { showToast } = useToast();
-
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -28,13 +27,11 @@ export default function Payments() {
     try {
       const res = await api.get(`/orders/${orderId}`);
       const orderData = res.data.data;
-
       // Already paid
       if (orderData.paymentStatus === "paid") {
         navigate("/success");
         return;
       }
-
       setOrder(orderData);
     } catch (error) {
       showToast(
@@ -48,6 +45,7 @@ export default function Payments() {
   };
 
   const payNow = async () => {
+    setLoading(true);
     try {
       const paymentOrder = await api.post("/payments/create", {
         orderId: order._id,
@@ -100,6 +98,8 @@ export default function Payments() {
           "Failed to start payment. Please try again.",
         "error"
       );
+    } finally {
+      setLoading(false);
     }
   };
 
