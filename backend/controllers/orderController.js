@@ -254,7 +254,7 @@ export const updateOrderDetails = async (req, res) => {
     // 🔒 Permission check
     if (req.user.role !== "admin") {
       if (
-        order.user.toString() !== req.user.id.toString() ||
+        order.user.toString() !== req.user._id.toString() ||
         order.paymentStatus !== "pending"
       ) {
         return res.status(403).json({
