@@ -32,6 +32,7 @@ export const AuthProvider = ({ children }) => {
 
   // 🔒 Logout
   const logout = async () => {
+    localStorage.removeItem()
     try {
       await api.post("/auth/logout");
     } catch {
