@@ -7,9 +7,11 @@ export const api = axios.create({
 
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
-    // 🔴 Redirect on ANY API failure
-    if (error.response) {
+  async (error) => {
+    try {
+      await api.get("/auth/me");
+    } catch {
+      // auth failed → redirect
       window.location.href = "/";
     }
 
