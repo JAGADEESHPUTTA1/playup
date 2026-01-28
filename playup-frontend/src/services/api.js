@@ -8,13 +8,16 @@ export const api = axios.create({
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
+    // 🔥 Handle both cases
+    const hasResponse = !!error.response;
+
     try {
       await api.get("/auth/me");
     } catch {
-      // auth failed → redirect
       window.location.href = "/";
     }
 
     return Promise.reject(error);
   }
 );
+
